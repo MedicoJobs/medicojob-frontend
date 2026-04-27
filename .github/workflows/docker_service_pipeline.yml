@@ -98,6 +98,16 @@ jobs:
           docker push "${{ steps.image.outputs.sha_tag }}"
           docker push "${{ steps.image.outputs.latest_tag }}"
 
+      - name: Validate GitOps token
+        shell: bash
+        env:
+          GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+        run: |
+          if [ -z "$GITOPS_TOKEN" ]; then
+            echo "GITOPS_TOKEN is missing. Add a repository or organization secret named GITOPS_TOKEN with write access to MedicoJobs/medicojob-gitops."
+            exit 1
+          fi
+
       - name: Checkout GitOps repo
         uses: actions/checkout@v4
         with:
