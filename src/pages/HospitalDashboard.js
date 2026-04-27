@@ -4,8 +4,8 @@ import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 import { 
-  PlusCircle, Activity, Users, Settings, ArrowUpRight, 
-  CheckCircle, Clock, FileText, Trash2, AlertCircle 
+  PlusCircle, Activity, Users, ArrowUpRight,
+  CheckCircle, FileText, Trash2
 } from 'lucide-react';
 
 const HospitalDashboard = () => {
@@ -31,7 +31,7 @@ const HospitalDashboard = () => {
   };
 
   const handleDeleteJob = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this job posting? This action cannot be undone.')) return;
+    if (!globalThis.confirm('Are you sure you want to delete this job posting? This action cannot be undone.')) return;
     
     setDeletingId(id);
     try {
@@ -123,12 +123,13 @@ const HospitalDashboard = () => {
           </div>
         </div>
         
-        {loading ? (
+        {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="animate-spin rounded-full h-10 w-10 border-4 border-emerald-100 border-t-emerald-600"></div>
             <p className="text-slate-400 font-bold text-sm">Syncing Database...</p>
           </div>
-        ) : myJobs.length > 0 ? (
+        )}
+        {!loading && myJobs.length > 0 && (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -194,7 +195,8 @@ const HospitalDashboard = () => {
               </tbody>
             </table>
           </div>
-        ) : (
+        )}
+        {!loading && myJobs.length === 0 && (
           <div className="p-20 text-center">
             <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PlusCircle size={32} className="text-slate-200" />

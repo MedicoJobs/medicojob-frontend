@@ -6,8 +6,8 @@ import { AuthContext } from '../context/AuthContext';
 import { Stethoscope, Mail, Lock, ArrowRight, ShieldCheck, Zap, Eye, EyeOff, XCircle } from 'lucide-react';
 
 const demoAccounts = [
-  { label: 'Applicant Demo', email: 'applicant@medicojob.com', password: 'Demo123!' },
-  { label: 'Hospital Demo', email: 'hospital@medicojob.com', password: 'Demo123!' },
+  { label: 'Applicant Demo', email: 'applicant@medicojob.com' },
+  { label: 'Hospital Demo', email: 'hospital@medicojob.com' },
 ];
 
 const Login = () => {
@@ -19,9 +19,9 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const useDemoAccount = (account) => {
+  const selectDemoAccount = (account) => {
     setEmail(account.email);
-    setPassword(account.password);
+    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
     setError('');
   };
 
@@ -110,11 +110,11 @@ const Login = () => {
                   <div className="text-sm">
                     <p className="font-black text-slate-900">{account.label}</p>
                     <p className="text-slate-500">{account.email}</p>
-                    <p className="text-slate-500">{account.password}</p>
+                    <p className="text-slate-500">Demo password configured by environment</p>
                   </div>
                   <button
                     type="button"
-                    onClick={() => useDemoAccount(account)}
+                    onClick={() => selectDemoAccount(account)}
                     className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 transition-colors hover:bg-emerald-100"
                   >
                     Use Demo
@@ -126,12 +126,13 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-3">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+              <label htmlFor="login-email" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none group-focus-within:text-emerald-500 transition-colors">
                   <Mail size={20} className="text-slate-300" />
                 </div>
                 <input 
+                  id="login-email"
                   type="email" 
                   required 
                   value={email}
@@ -144,7 +145,7 @@ const Login = () => {
 
             <div className="space-y-3">
               <div className="flex justify-between items-center px-1">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Secret Access Key</label>
+                <label htmlFor="login-password" className="text-xs font-black text-slate-400 uppercase tracking-widest">Secret Access Key</label>
                 <Link to="#" className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-700">Forgot?</Link>
               </div>
               <div className="relative group">
@@ -160,6 +161,7 @@ const Login = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
                 <input 
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   required 
                   value={password}

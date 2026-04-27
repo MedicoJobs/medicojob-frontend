@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
@@ -141,7 +142,7 @@ const Register = () => {
                   label="Confirm" 
                   icon={<Lock size={18} />}
                   type={showConfirmPassword ? "text" : "password"} 
-                  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
+                  name="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
                   placeholder="••••••••"
                   toggleIcon={showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -188,28 +189,48 @@ const Register = () => {
   );
 };
 
-const InputGroup = ({ label, icon, toggleIcon, onToggle, ...props }) => (
-  <div className="space-y-2">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
-    <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
-        {icon}
+const InputGroup = ({ label, icon, toggleIcon, onToggle, id, ...props }) => {
+  const inputId = id || `register-${props.name}`;
+
+  return (
+    <div className="space-y-2">
+      <label htmlFor={inputId} className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
+      <div className="relative group">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+          {icon}
+        </div>
+        <input
+          id={inputId}
+          {...props}
+          className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-12 py-3.5 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-emerald-500/20 transition-all"
+        />
+        {toggleIcon && (
+          <button
+            type="button"
+            onClick={onToggle}
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-500 transition-colors"
+          >
+            {toggleIcon}
+          </button>
+        )}
       </div>
-      <input
-        {...props}
-        className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-12 py-3.5 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-emerald-500/20 transition-all"
-      />
-      {toggleIcon && (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-500 transition-colors"
-        >
-          {toggleIcon}
-        </button>
-      )}
     </div>
-  </div>
-);
+  );
+};
+
+InputGroup.propTypes = {
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  toggleIcon: PropTypes.node,
+  onToggle: PropTypes.func,
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+};
+
+InputGroup.defaultProps = {
+  toggleIcon: null,
+  onToggle: undefined,
+  id: null,
+};
 
 export default Register;
