@@ -24,3 +24,4 @@ jobs:
       service_path: .
     secrets:
       GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
