@@ -7,7 +7,6 @@ on:
       - labeled
     branches:
       - main
-      - master
 
 permissions:
   contents: read
