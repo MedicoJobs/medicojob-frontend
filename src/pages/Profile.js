@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
@@ -36,7 +37,7 @@ const Profile = () => {
       const res = await axios.get(`${API_BASE_URL}/availability/${user.id}`);
       setAvailability(res.data);
     } catch (err) {
-      console.log('No availability data yet');
+      console.log('No availability data yet', err);
     }
   };
 
@@ -52,6 +53,7 @@ const Profile = () => {
       setMessage({ text: `Status updated to ${nextStatus.toUpperCase()}`, type: 'success' });
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     } catch (err) {
+      console.error('Failed to update availability status.', err);
       setMessage({ text: 'Failed to update status', type: 'error' });
     } finally {
       setStatusLoading(false);
@@ -69,8 +71,8 @@ const Profile = () => {
       const token = localStorage.getItem('token');
       const updatedData = {
         ...formData,
-        skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
-        preferredLocations: formData.preferredLocations.split(',').map(l => l.trim()).filter(l => l)
+        skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
+        preferredLocations: formData.preferredLocations.split(',').map(l => l.trim()).filter(Boolean)
       };
 
       const res = await axios.put(`${API_BASE_URL}/auth/profile`, updatedData, {
@@ -83,6 +85,7 @@ const Profile = () => {
       setMessage({ text: 'Profile updated successfully!', type: 'success' });
       setIsEditing(false);
     } catch (err) {
+      console.error('Failed to update profile.', err);
       setMessage({ text: 'Error updating profile', type: 'error' });
     } finally {
       setLoading(false);
@@ -175,8 +178,9 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Professional Bio</label>
+                <label htmlFor="profile-bio" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Professional Bio</label>
                 <textarea 
+                  id="profile-bio"
                   name="bio"
                   value={formData.bio}
                   onChange={handleChange}
@@ -218,19 +222,35 @@ const Profile = () => {
   );
 };
 
-const InputGroup = ({ label, icon, ...props }) => (
-  <div className="space-y-2">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
-    <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-500 transition-colors">
-        {icon}
+const InputGroup = ({ label, icon, id, ...props }) => {
+  const inputId = id || props.name;
+
+  return (
+    <div className="space-y-2">
+      <label htmlFor={inputId} className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
+      <div className="relative group">
+        <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-500 transition-colors">
+          {icon}
+        </div>
+        <input 
+          id={inputId}
+          {...props}
+          className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-4 text-sm font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-emerald-500/20 transition-all disabled:opacity-70"
+        />
       </div>
-      <input 
-        {...props}
-        className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-4 text-sm font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-emerald-500/20 transition-all disabled:opacity-70"
-      />
     </div>
-  </div>
-);
+  );
+};
+
+InputGroup.propTypes = {
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+};
+
+InputGroup.defaultProps = {
+  id: null,
+};
 
 export default Profile;

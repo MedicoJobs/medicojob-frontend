@@ -1,7 +1,31 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Stethoscope, User, LogOut, Briefcase, LayoutDashboard, Heart, PlusCircle } from 'lucide-react';
+
+function NavLink({ to, icon, active, children }) {
+  return (
+    <Link 
+      to={to} 
+      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+        active 
+          ? 'text-emerald-600 bg-emerald-50/50' 
+          : 'text-slate-500 hover:text-emerald-600 hover:bg-slate-50'
+      }`}
+    >
+      {icon}
+      <span className="hidden sm:inline">{children}</span>
+    </Link>
+  );
+}
+
+NavLink.propTypes = {
+  to: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  active: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -88,19 +112,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
-const NavLink = ({ to, icon, active, children }) => (
-  <Link 
-    to={to} 
-    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
-      active 
-        ? 'text-emerald-600 bg-emerald-50/50' 
-        : 'text-slate-500 hover:text-emerald-600 hover:bg-slate-50'
-    }`}
-  >
-    {icon}
-    <span className="hidden sm:inline">{children}</span>
-  </Link>
-);
 
 export default Navbar;

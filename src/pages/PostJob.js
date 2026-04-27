@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
@@ -69,44 +70,48 @@ const PostJob = () => {
         {/* Job Basics */}
         <FormSection title="Position Details">
           <div className="col-span-2">
-            <FormLabel icon={<Briefcase size={16} />}>Job Title *</FormLabel>
+            <FormLabel htmlFor="job-title" icon={<Briefcase size={16} />}>Job Title *</FormLabel>
             <input
+              id="job-title"
               type="text" name="title" required value={formData.title} onChange={handleChange}
               className="input-field" placeholder="e.g. Senior Cardiologist, Emergency Room Nurse"
             />
           </div>
           <div>
-            <FormLabel icon={<Tag size={16} />}>Specialization *</FormLabel>
-            <select name="specialization" required value={formData.specialization} onChange={handleChange} className="input-field bg-white">
+            <FormLabel htmlFor="job-post-specialization" icon={<Tag size={16} />}>Specialization *</FormLabel>
+            <select id="job-post-specialization" name="specialization" required value={formData.specialization} onChange={handleChange} className="input-field bg-white">
               <option value="" disabled>Select Specialization</option>
               {SPECIALIZATIONS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <div>
-            <FormLabel>Employment Type *</FormLabel>
-            <select name="type" required value={formData.type} onChange={handleChange} className="input-field bg-white">
+            <FormLabel htmlFor="job-post-type">Employment Type *</FormLabel>
+            <select id="job-post-type" name="type" required value={formData.type} onChange={handleChange} className="input-field bg-white">
               <option value="full-time">Full-Time</option>
               <option value="part-time">Part-Time</option>
               <option value="emergency">Emergency / Locum</option>
             </select>
           </div>
           <div>
-            <FormLabel icon={<MapPin size={16} />}>Location *</FormLabel>
+            <FormLabel htmlFor="job-post-location" icon={<MapPin size={16} />}>Location *</FormLabel>
             <input
+              id="job-post-location"
               type="text" name="location" required value={formData.location} onChange={handleChange}
               className="input-field" placeholder="City, State or 'Remote'"
             />
           </div>
           <div>
-            <FormLabel icon={<DollarSign size={16} />}>Annual Salary (₹ or $) *</FormLabel>
+            <FormLabel htmlFor="job-post-salary" icon={<DollarSign size={16} />}>Annual Salary (₹ or $) *</FormLabel>
             <input
+              id="job-post-salary"
               type="number" name="salary" required value={formData.salary} onChange={handleChange}
               className="input-field" placeholder="e.g. 1800000"
             />
           </div>
           <div className="col-span-2">
-            <FormLabel icon={<Calendar size={16} />}>Application Deadline *</FormLabel>
+            <FormLabel htmlFor="job-post-expiry-date" icon={<Calendar size={16} />}>Application Deadline *</FormLabel>
             <input
+              id="job-post-expiry-date"
               type="date" name="expiryDate" required value={formData.expiryDate} onChange={handleChange}
               className="input-field"
               min={new Date().toISOString().split('T')[0]}
@@ -117,16 +122,18 @@ const PostJob = () => {
         {/* Job Description */}
         <FormSection title="Job Description">
           <div className="col-span-2">
-            <FormLabel icon={<AlignLeft size={16} />}>Position Overview *</FormLabel>
+            <FormLabel htmlFor="job-post-description" icon={<AlignLeft size={16} />}>Position Overview *</FormLabel>
             <textarea
+              id="job-post-description"
               name="description" required value={formData.description} onChange={handleChange}
               className="input-field resize-none" rows={5}
               placeholder="Describe the role, responsibilities, and what makes this opportunity unique..."
             />
           </div>
           <div className="col-span-2">
-            <FormLabel>Requirements & Qualifications</FormLabel>
+            <FormLabel htmlFor="job-post-requirements">Requirements & Qualifications</FormLabel>
             <textarea
+              id="job-post-requirements"
               name="requirements" value={formData.requirements} onChange={handleChange}
               className="input-field resize-none" rows={4}
               placeholder="List key requirements: qualifications, certifications, years of experience..."
@@ -171,11 +178,26 @@ const FormSection = ({ title, children }) => (
   </div>
 );
 
-const FormLabel = ({ icon, children }) => (
-  <label className="flex items-center gap-2 text-sm font-black text-slate-700 mb-2">
+FormSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
+const FormLabel = ({ htmlFor, icon, children }) => (
+  <label htmlFor={htmlFor} className="flex items-center gap-2 text-sm font-black text-slate-700 mb-2">
     {icon && <span className="text-slate-400">{icon}</span>}
     {children}
   </label>
 );
+
+FormLabel.propTypes = {
+  htmlFor: PropTypes.string.isRequired,
+  icon: PropTypes.node,
+  children: PropTypes.node.isRequired,
+};
+
+FormLabel.defaultProps = {
+  icon: null,
+};
 
 export default PostJob;

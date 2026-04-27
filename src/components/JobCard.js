@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { MapPin, DollarSign, Calendar, Building2, ArrowRight, BadgeCheck } from 'lucide-react';
 
@@ -65,6 +66,21 @@ const JobCard = ({ job }) => {
       </div>
     </div>
   );
+};
+
+JobCard.propTypes = {
+  job: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    specialization: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    salary: PropTypes.number.isRequired,
+    expiryDate: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(Date),
+    ]).isRequired,
+  }).isRequired,
 };
 
 export default JobCard;

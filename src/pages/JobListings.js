@@ -3,8 +3,8 @@ import axios from 'axios';
 import API_BASE_URL from '../apiConfig';
 import JobCard from '../components/JobCard';
 import {
-  Search, MapPin, Briefcase, DollarSign, Filter, X,
-  ChevronDown, SlidersHorizontal, Trash2, Map, Navigation, Clock
+  Search, MapPin, DollarSign,
+  ChevronDown, Trash2, Map, Navigation, Clock
 } from 'lucide-react';
 import { debounce } from 'lodash';
 
@@ -14,6 +14,44 @@ const SPECIALIZATIONS = [
 ];
 
 const JOB_TYPES = ['full-time', 'part-time', 'emergency', 'locum'];
+
+const filterJobsBySearchAndSalary = (jobs, filters) => {
+  let filtered = jobs;
+
+  if (filters.search) {
+    const searchTerm = filters.search.toLowerCase();
+    filtered = filtered.filter(job => job.title.toLowerCase().includes(searchTerm));
+  }
+
+  if (filters.minSalary) {
+    filtered = filtered.filter(job => job.salary >= Number(filters.minSalary));
+  }
+
+  return filtered;
+};
+
+const fetchNearbyJobs = async (coords) => {
+  const url = `${API_BASE_URL}/nearby/jobs?lat=${coords.lat}&lng=${coords.lng}&distance=50000`;
+  const res = await axios.get(url);
+  const jobIds = res.data.map(location => location.entityId);
+
+  if (jobIds.length === 0) {
+    return [];
+  }
+
+  const jobsRes = await axios.get(`${API_BASE_URL}/jobs`);
+  return jobsRes.data.filter(job => jobIds.includes(job._id));
+};
+
+const fetchFilteredJobs = async (filters) => {
+  const params = new URLSearchParams();
+  if (filters.specialization) params.append('specialization', filters.specialization);
+  if (filters.type) params.append('type', filters.type);
+  if (filters.location) params.append('location', filters.location);
+
+  const res = await axios.get(`${API_BASE_URL}/jobs?${params.toString()}`);
+  return filterJobsBySearchAndSalary(res.data, filters);
+};
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
@@ -28,42 +66,14 @@ const JobListings = () => {
   const [nearbyMode, setNearbyMode] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
 
-  // Fetch jobs with filters
   const fetchJobs = useCallback(async (currentFilters, isNearby = false, coords = null) => {
     setLoading(true);
     try {
-      let url = `${API_BASE_URL}/jobs`;
+      const nextJobs = isNearby && coords
+        ? await fetchNearbyJobs(coords)
+        : await fetchFilteredJobs(currentFilters);
 
-      // If nearby mode is active, we use the location service (Port 5005)
-      if (isNearby && coords) {
-        url = `${API_BASE_URL}/nearby/jobs?lat=${coords.lat}&lng=${coords.lng}&distance=50000`; // 50km radius
-        const res = await axios.get(url);
-        // Location service returns location objects, we need to fetch the actual jobs
-        const jobIds = res.data.map(l => l.entityId);
-        if (jobIds.length > 0) {
-          const jobsRes = await axios.get(`${API_BASE_URL}/jobs`);
-          setJobs(jobsRes.data.filter(j => jobIds.includes(j._id)));
-        } else {
-          setJobs([]);
-        }
-      } else {
-        const params = new URLSearchParams();
-        if (currentFilters.specialization) params.append('specialization', currentFilters.specialization);
-        if (currentFilters.type) params.append('type', currentFilters.type);
-        if (currentFilters.location) params.append('location', currentFilters.location);
-
-        const res = await axios.get(`${url}?${params.toString()}`);
-
-        // Client-side filtering for search and salary
-        let filtered = res.data;
-        if (currentFilters.search) {
-          filtered = filtered.filter(j => j.title.toLowerCase().includes(currentFilters.search.toLowerCase()));
-        }
-        if (currentFilters.minSalary) {
-          filtered = filtered.filter(j => j.salary >= Number(currentFilters.minSalary));
-        }
-        setJobs(filtered);
-      }
+      setJobs(nextJobs);
     } catch (err) {
       console.error(err);
     } finally {
@@ -94,14 +104,22 @@ const JobListings = () => {
       return;
     }
 
+    const allowLocation = globalThis.confirm(
+      'MedicoJob uses your location only to find nearby job opportunities. Continue?'
+    );
+
+    if (!allowLocation) {
+      return;
+    }
+
     setLocationLoading(true);
-    if (!navigator.geolocation) {
+    if (!globalThis.navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
       setLocationLoading(false);
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
+    globalThis.navigator.geolocation.getCurrentPosition(
       (position) => {
         const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
         setNearbyMode(true);
@@ -127,6 +145,13 @@ const JobListings = () => {
   };
 
   const activeFiltersCount = Object.values(filters).filter(v => v !== '').length + (nearbyMode ? 1 : 0);
+  let nearbyButtonIcon = <Navigation size={18} />;
+
+  if (locationLoading) {
+    nearbyButtonIcon = <Clock size={18} className="animate-spin" />;
+  } else if (nearbyMode) {
+    nearbyButtonIcon = <Map size={18} />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 animate-fade-in">
@@ -141,7 +166,7 @@ const JobListings = () => {
             onClick={handleNearbySearch}
             className={`flex items-center gap-2 px-5 py-3 rounded-xl font-black text-sm transition-all shadow-sm ${nearbyMode ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 hover:text-emerald-600'}`}
           >
-            {locationLoading ? <Clock size={18} className="animate-spin" /> : nearbyMode ? <Map size={18} /> : <Navigation size={18} />}
+            {nearbyButtonIcon}
             {nearbyMode ? 'Nearby Mode Active' : 'Find Nearby Jobs'}
           </button>
         </div>
@@ -164,10 +189,11 @@ const JobListings = () => {
             <div className="space-y-6">
               {/* Search */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Search Keywords</label>
+                <label htmlFor="job-search" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Search Keywords</label>
                 <div className="relative group">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={18} />
                   <input
+                    id="job-search"
                     type="text"
                     placeholder="Title, keywords..."
                     value={filters.search}
@@ -179,9 +205,10 @@ const JobListings = () => {
 
               {/* Specialization */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Specialization</label>
+                <label htmlFor="job-specialization" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Specialization</label>
                 <div className="relative">
                   <select
+                    id="job-specialization"
                     value={filters.specialization}
                     onChange={(e) => updateFilter('specialization', e.target.value)}
                     className="w-full pl-4 pr-10 py-3.5 bg-slate-50 border-2 border-slate-50 rounded-2xl text-sm font-bold focus:bg-white focus:border-emerald-100 outline-none transition-all appearance-none cursor-pointer"
@@ -195,10 +222,11 @@ const JobListings = () => {
 
               {/* Location */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
+                <label htmlFor="job-location" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
                 <div className="relative group">
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={18} />
                   <input
+                    id="job-location"
                     type="text"
                     placeholder="City or state..."
                     value={filters.location}
@@ -210,10 +238,11 @@ const JobListings = () => {
 
               {/* Salary */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Min Salary (Annual)</label>
+                <label htmlFor="job-min-salary" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Min Salary (Annual)</label>
                 <div className="relative group">
                   <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={18} />
                   <input
+                    id="job-min-salary"
                     type="number"
                     placeholder="e.g. 500000"
                     value={filters.minSalary}

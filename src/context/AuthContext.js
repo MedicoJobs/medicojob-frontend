@@ -1,5 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useCallback, useMemo, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/api';
 
 export const AuthContext = createContext();
 
@@ -44,6 +46,7 @@ export const AuthProvider = ({ children }) => {
           setUser(normalized);
           localStorage.setItem('user', JSON.stringify(normalized));
         } catch (error) {
+          console.error('Failed to refresh authenticated user profile.', error);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setUser(null);
@@ -54,28 +57,40 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = (userData, token) => {
+  const login = useCallback((userData, token) => {
     localStorage.setItem('token', token);
     const normalized = normalizeUser(userData);
     localStorage.setItem('user', JSON.stringify(normalized));
     setUser(normalized);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-  };
+  }, []);
 
-  const updateUser = (userData) => {
+  const updateUser = useCallback((userData) => {
     const normalized = normalizeUser(userData);
     localStorage.setItem('user', JSON.stringify(normalized));
     setUser(normalized);
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    user,
+    loading,
+    login,
+    logout,
+    updateUser,
+  }), [user, loading, login, logout, updateUser]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

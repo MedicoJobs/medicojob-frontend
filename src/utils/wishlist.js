@@ -7,6 +7,7 @@ export const getWishlist = (userId) => {
     const raw = localStorage.getItem(getWishlistKey(userId));
     return raw ? JSON.parse(raw) : [];
   } catch (error) {
+    console.error('Failed to read wishlist from local storage.', error);
     return [];
   }
 };

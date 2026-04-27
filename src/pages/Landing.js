@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Stethoscope, Building2, ShieldCheck, Zap, Globe, Users, ArrowRight, PlayCircle } from 'lucide-react';
+import { Stethoscope, Building2, ShieldCheck, Zap, Globe, ArrowRight, PlayCircle } from 'lucide-react';
 
 const Landing = () => {
   return (

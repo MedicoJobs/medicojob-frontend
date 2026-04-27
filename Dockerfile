@@ -6,7 +6,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY public ./public
+COPY src ./src
+COPY postcss.config.js tailwind.config.js ./
 
 RUN chown -R node:node /usr/src/app
 

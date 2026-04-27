@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { X, Bell } from 'lucide-react';
 
-const NotificationToast = ({ notification, onClose }) => {
+function NotificationToast({ notification, onClose }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -34,6 +35,19 @@ const NotificationToast = ({ notification, onClose }) => {
       </div>
     </div>
   );
+}
+
+NotificationToast.propTypes = {
+  notification: PropTypes.exact({
+    type: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+  }),
+  onClose: PropTypes.func.isRequired,
+};
+
+NotificationToast.defaultProps = {
+  notification: null,
 };
 
 export default NotificationToast;
