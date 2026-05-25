@@ -1,19 +1,21 @@
-FROM node:18-alpine
+FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-RUN npm install
+RUN npm ci
 
 COPY public ./public
 COPY src ./src
 COPY postcss.config.js tailwind.config.js ./
 
-RUN chown -R node:node /usr/src/app
+RUN npm run build
 
-USER node
+FROM nginx:1.27-alpine
 
-EXPOSE 3000
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-CMD ["npm", "start"]
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
