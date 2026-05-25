@@ -22,7 +22,8 @@ import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 
 import { SOCKET_URL } from './utils/api';
-export const socket = io(SOCKET_URL);
+const SOCKET_ENABLED = process.env.REACT_APP_ENABLE_SOCKET === 'true';
+export const socket = SOCKET_ENABLED ? io(SOCKET_URL) : null;
 
 function StartupRedirect() {
   const navigate = useNavigate();
@@ -49,6 +50,10 @@ function App() {
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
+    if (!socket) {
+      return undefined;
+    }
+
     socket.on('newJob', (job) => {
       setNotification({ title: 'New Job Posted!', message: `${job.title} in ${job.location}`, type: 'success' });
     });
