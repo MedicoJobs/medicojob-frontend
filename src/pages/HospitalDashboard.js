@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 import { 
   PlusCircle, Activity, Users, ArrowUpRight,
-  CheckCircle, FileText, Trash2
+  CheckCircle, FileText, Trash2, Video
 } from 'lucide-react';
 
 const HospitalDashboard = () => {
@@ -62,13 +62,22 @@ const HospitalDashboard = () => {
             Welcome back, {user.name}
           </p>
         </div>
-        <Link 
-          to="/hospital/post-job" 
-          className="btn-primary flex items-center gap-3 py-4 px-8 shadow-emerald-100"
-        >
-          <PlusCircle size={22} />
-          Create New Job Posting
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link 
+            to="/hospital/course-upload" 
+            className="flex items-center gap-3 py-4 px-8 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-200 transition-colors shadow-sm"
+          >
+            <Video size={22} />
+            Upload Course
+          </Link>
+          <Link 
+            to="/hospital/post-job" 
+            className="btn-primary flex items-center gap-3 py-4 px-8 shadow-emerald-100"
+          >
+            <PlusCircle size={22} />
+            Create New Job Posting
+          </Link>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">

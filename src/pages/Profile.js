@@ -12,6 +12,8 @@ const Profile = () => {
   const { user, login } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
   const [statusLoading, setStatusLoading] = useState(false);
   const [availability, setAvailability] = useState({ status: 'active' });
   const [formData, setFormData] = useState({
@@ -64,6 +66,48 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('profileImage', file);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/image`, formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      login(res.data.user, token);
+      setMessage({ text: 'Profile image uploaded successfully!', type: 'success' });
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Failed to upload profile image', type: 'error' });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingResume(true);
+    const formData = new FormData();
+    formData.append('resume', file);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/resume`, formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      login(res.data.user, token);
+      setMessage({ text: 'Resume uploaded successfully!', type: 'success' });
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: 'Failed to upload resume', type: 'error' });
+    } finally {
+      setUploadingResume(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -101,10 +145,18 @@ const Profile = () => {
           <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-center relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-br from-emerald-600 to-teal-700"></div>
             <div className="relative z-10 pt-4">
-              <div className="w-24 h-24 rounded-3xl bg-white p-1 shadow-lg mx-auto mb-4">
-                <div className="w-full h-full rounded-[1.25rem] bg-slate-100 flex items-center justify-center text-slate-400">
-                  <User size={40} />
-                </div>
+              <div className="w-24 h-24 rounded-3xl bg-white p-1 shadow-lg mx-auto mb-4 relative group overflow-hidden">
+                {user.profileImage ? (
+                  <img src={user.profileImage} alt="Profile" className="w-full h-full rounded-[1.25rem] object-cover" />
+                ) : (
+                  <div className="w-full h-full rounded-[1.25rem] bg-slate-100 flex items-center justify-center text-slate-400">
+                    <User size={40} />
+                  </div>
+                )}
+                <label className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-[1.25rem] cursor-pointer">
+                  {uploadingImage ? <Clock size={20} className="animate-spin" /> : <><Edit3 size={20} /><span className="text-[10px] mt-1 font-bold">Change</span></>}
+                  <input type="file" className="hidden" accept="image/jpeg, image/png" onChange={handleImageUpload} disabled={uploadingImage} />
+                </label>
               </div>
               <h2 className="text-2xl font-black text-slate-900">{user.name}</h2>
               <p className="text-emerald-600 font-bold mb-6 capitalize">{user.role}</p>
@@ -194,6 +246,29 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InputGroup label="Skills (Comma separated)" name="skills" icon={<Zap size={18} />} value={formData.skills} onChange={handleChange} disabled={!isEditing} placeholder="Surgery, Emergency, ICU..." />
                 <InputGroup label="Preferred Locations" name="preferredLocations" icon={<MapPin size={18} />} value={formData.preferredLocations} onChange={handleChange} disabled={!isEditing} placeholder="Mumbai, Pune, Delhi..." />
+              </div>
+
+              <div className="border-t border-slate-100 pt-8 mt-8">
+                <h3 className="text-sm font-black text-slate-900 mb-4">Resume & Documents</h3>
+                <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500">
+                    <Briefcase size={20} />
+                  </div>
+                  <div className="flex-grow">
+                    <p className="text-sm font-bold text-slate-900">Professional Resume</p>
+                    {user.resumeUrl ? (
+                      <a href={user.resumeUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-600 hover:underline">View Current Resume</a>
+                    ) : (
+                      <p className="text-xs text-slate-400 font-bold">No resume uploaded</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-black cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-2">
+                      {uploadingResume ? <Clock size={14} className="animate-spin" /> : <><Save size={14} /> Upload</>}
+                      <input type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={handleResumeUpload} disabled={uploadingResume} />
+                    </label>
+                  </div>
+                </div>
               </div>
 
               {isEditing && (

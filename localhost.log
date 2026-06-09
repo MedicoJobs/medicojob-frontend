@@ -1,0 +1,903 @@
+Starting the development server...
+
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3001
+  On Your Network:  http://192.168.56.1:3001
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5...`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:500`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000 `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000      `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000 `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000 ||`http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000 || `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000' || `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:34) (2:34)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:33)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL0[39m [33m=[39m http[33m:[39m[90m//localhost:5000' || `http://${hostname}:5000`;[39m
+ [90m   |[39m                                  [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:34:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:34)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:33) (2:33)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:34)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL00[39m [33m=[39m http[33m:[39m[90m//localhost:5000' || `http://${hostname}:5000`;[39m
+ [90m   |[39m                                   [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:33:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:33)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\utils\api.js
+Syntax error: Missing semicolon. (2:32) (2:32)
+[1m[31mERROR[39m[22m in [1m./src/utils/api.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\utils\api.js: Missing semicolon. (2:32)
+
+[0m [90m 1 |[39m [36mconst[39m hostname [33m=[39m globalThis[33m.[39mlocation[33m.[39mhostname[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mexport[39m [36mconst[39m [33mAPI_BASE_URL[39m [33m=[39m http[33m:[39m[90m//localhost:5000' || `http://${hostname}:5000`;[39m
+ [90m   |[39m                                 [31m[1m^[22m[39m
+ [90m 3 |[39m [36mexport[39m [36mconst[39m [33mSOCKET_URL[39m [33m=[39m [32m`http://${hostname}:5000`[39m[33m;[39m
+ [90m 4 |[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowParserMixin.semicolon (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6895:10)
+    at FlowParserMixin.parseVarStatement (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13231:10)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12851:23)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseStatementListItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12747:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13934:17)
+    at FlowParserMixin.parseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3120:20)
+    at FlowParserMixin.maybeParseExportDeclaration (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13893:31)
+    at FlowParserMixin.parseExport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13812:29)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12878:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\utils\api.js
+  Line 2:32:  Parsing [1m[31merror[39m[22m[1m: Missing semicolon. (2:32)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+Compiling...
+Failed to compile.
+
+[eslint] 
+src\App.js
+Syntax error: Identifier 'Wishlist' has already been declared. (24:7) (24:7)
+[1m[31mERROR[39m[22m in [1m./src/App.js[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: D:\medicojobs\medicojob-frontend\src\App.js: Identifier 'Wishlist' has already been declared. (24:7)
+
+[0m [90m 22 |[39m [36mimport[39m [33mProfile[39m [36mfrom[39m [32m'./pages/Profile'[39m[33m;[39m
+ [90m 23 |[39m [36mimport[39m [33mWishlist[39m [36mfrom[39m [32m'./pages/Wishlist'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 24 |[39m [36mimport[39m [33mWishlist[39m [36mfrom[39m [32m'./pages/Wishlist'[39m[33m;[39m
+ [90m    |[39m        [31m[1m^[22m[39m
+ [90m 25 |[39m [36mimport[39m [33mCourses[39m [36mfrom[39m [32m'./pages/Courses'[39m[33m;[39m
+ [90m 26 |[39m [36mimport[39m [33mCoursePlayer[39m [36mfrom[39m [32m'./pages/CoursePlayer'[39m[33m;[39m
+ [90m 27 |[39m [36mimport[39m [33mAdminCourseUpload[39m [36mfrom[39m [32m'./pages/AdminCourseUpload'[39m[33m;[39m[0m
+    at constructor (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:365:19)
+    at FlowParserMixin.raise (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:6599:19)
+    at FlowScopeHandler.checkRedeclarationInScope (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:1619:19)
+    at FlowScopeHandler.declareName (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:1585:12)
+    at FlowScopeHandler.declareName (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:1686:11)
+    at FlowParserMixin.declareNameFromIdentifier (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:7567:16)
+    at FlowParserMixin.checkIdentifier (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:7563:12)
+    at FlowParserMixin.checkLVal (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:7500:12)
+    at FlowParserMixin.finishImportSpecifier (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14266:10)
+    at FlowParserMixin.parseImportSpecifierLocal (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3381:31)
+    at FlowParserMixin.maybeParseDefaultImportSpecifier (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14366:12)
+    at FlowParserMixin.parseImportSpecifiersAndAfter (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14239:29)
+    at FlowParserMixin.parseImport (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14235:17)
+    at FlowParserMixin.parseStatementContent (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12876:27)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12767:17)
+    at FlowParserMixin.parseStatementLike (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:2918:24)
+    at FlowParserMixin.parseModuleItem (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12744:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13316:36)
+    at FlowParserMixin.parseBlockBody (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:13309:10)
+    at FlowParserMixin.parseProgram (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12622:10)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:12612:25)
+    at FlowParserMixin.parseTopLevel (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:3685:28)
+    at FlowParserMixin.parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14488:25)
+    at parse (D:\medicojobs\medicojob-frontend\node_modules\@babel\parser\lib\index.js:14522:38)
+    at parser (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (D:\medicojobs\medicojob-frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+    at step (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:261:32)
+    at D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:273:13
+    at async.call.result.err.err (D:\medicojobs\medicojob-frontend\node_modules\gensync\index.js:223:11)
+
+[1m[31mERROR[39m[22m in [1m[eslint] 
+src\App.js
+  Line 24:7:  Parsing [1m[31merror[39m[22m[1m: Identifier 'Wishlist' has already been declared. (24:7)
+
+[39m[22m
+
+webpack compiled with [1m[31m2 errors[39m[22m

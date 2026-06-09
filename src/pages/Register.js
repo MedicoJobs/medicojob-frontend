@@ -90,28 +90,8 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'applicant' })}
-                className={`flex-1 flex items-center justify-center gap-3 py-3.5 rounded-[1.25rem] font-black text-sm transition-all ${
-                  formData.role === 'applicant' ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <User size={18} /> Medical Professional
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, role: 'hospital' })}
-                className={`flex-1 flex items-center justify-center gap-3 py-3.5 rounded-[1.25rem] font-black text-sm transition-all ${
-                  formData.role === 'hospital' ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Building size={18} /> Health Facility
-              </button>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold flex items-center gap-3 border border-red-100 animate-shake">
-                <Activity size={18} /> {error}
-              </div>
-            )}
+                >
+                </button></div>
 
             <div className="space-y-4">
               <InputGroup 
@@ -189,7 +169,7 @@ const Register = () => {
   );
 };
 
-const InputGroup = ({ label, icon, toggleIcon, onToggle, id, ...props }) => {
+const InputGroup = ({ label, icon, toggleIcon = null, onToggle, id = null, ...props }) => {
   const inputId = id || `register-${props.name}`;
 
   return (
@@ -225,12 +205,6 @@ InputGroup.propTypes = {
   onToggle: PropTypes.func,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
-};
-
-InputGroup.defaultProps = {
-  toggleIcon: null,
-  onToggle: undefined,
-  id: null,
 };
 
 export default Register;

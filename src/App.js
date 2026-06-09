@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-import { AuthProvider } from './context/AuthContext';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -20,9 +21,12 @@ import PostJob from './pages/PostJob';
 import ApplicationsTracking from './pages/ApplicationsTracking';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
+import Courses from './pages/Courses';
+import CoursePlayer from './pages/CoursePlayer';
+import AdminCourseUpload from './pages/AdminCourseUpload';
 
 import { SOCKET_URL } from './utils/api';
-export const socket = io(SOCKET_URL);
+export const socket = io(SOCKET_URL, { autoConnect: false });
 
 function StartupRedirect() {
   const navigate = useNavigate();
@@ -45,10 +49,21 @@ function StartupRedirect() {
   return null;
 }
 
-function App() {
-  const [notification, setNotification] = useState(null);
+function SocketNotifications({ setNotification }) {
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
+    if (!user) {
+      if (socket.connected) {
+        socket.disconnect();
+      }
+      return undefined;
+    }
+
+    // if (!socket.connected) {
+    //   socket.connect();
+    // }
+
     socket.on('newJob', (job) => {
       setNotification({ title: 'New Job Posted!', message: `${job.title} in ${job.location}`, type: 'success' });
     });
@@ -60,13 +75,25 @@ function App() {
     return () => {
       socket.off('newJob');
       socket.off('applicationUpdate');
+      socket.disconnect();
     };
-  }, []);
+  }, [setNotification, user]);
+
+  return null;
+}
+
+SocketNotifications.propTypes = {
+  setNotification: PropTypes.func.isRequired,
+};
+
+function App() {
+  const [notification, setNotification] = useState(null);
 
   return (
     <AuthProvider>
       <Router>
         <StartupRedirect />
+        <SocketNotifications setNotification={setNotification} />
         <div className="min-h-screen flex flex-col font-sans">
           <Navbar />
           
@@ -112,6 +139,30 @@ function App() {
               <Route path="/hospital/jobs/:jobId/applications" element={
                 <ProtectedRoute allowedRoles={['hospital']}>
                   <ApplicationsTracking />
+                </ProtectedRoute>
+              } />
+              <Route path="/hospital/course-upload" element={
+                <ProtectedRoute allowedRoles={['hospital']}>
+                  <AdminCourseUpload />
+                </ProtectedRoute>
+              } />
+
+              {/* Protected Routes - Admin */}
+              <Route path="/admin/courses/upload" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminCourseUpload />
+                </ProtectedRoute>
+              } />
+
+              {/* Protected Routes - CME / Courses */}
+              <Route path="/courses" element={
+                <ProtectedRoute>
+                  <Courses />
+                </ProtectedRoute>
+              } />
+              <Route path="/courses/:id" element={
+                <ProtectedRoute>
+                  <CoursePlayer />
                 </ProtectedRoute>
               } />
             </Routes>
