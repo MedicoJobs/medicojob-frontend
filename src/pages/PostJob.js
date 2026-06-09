@@ -183,7 +183,7 @@ FormSection.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const FormLabel = ({ htmlFor, icon, children }) => (
+const FormLabel = ({ htmlFor, icon = null, children }) => (
   <label htmlFor={htmlFor} className="flex items-center gap-2 text-sm font-black text-slate-700 mb-2">
     {icon && <span className="text-slate-400">{icon}</span>}
     {children}
@@ -195,9 +195,4 @@ FormLabel.propTypes = {
   icon: PropTypes.node,
   children: PropTypes.node.isRequired,
 };
-
-FormLabel.defaultProps = {
-  icon: null,
-};
-
 export default PostJob;

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Stethoscope, User, LogOut, Briefcase, LayoutDashboard, Heart, PlusCircle } from 'lucide-react';
+import { Stethoscope, User, LogOut, Briefcase, LayoutDashboard, Heart, PlusCircle, BookOpen } from 'lucide-react';
 
 function NavLink({ to, icon, active, children }) {
   return (
@@ -54,6 +54,9 @@ const Navbar = () => {
         <NavLink to="/jobs" icon={<Briefcase size={18} />} active={isActive('/jobs')}>
           Find Jobs
         </NavLink>
+        <NavLink to="/courses" icon={<BookOpen size={18} />} active={isActive('/courses')}>
+          Courses
+        </NavLink>
         
         {user ? (
           <>
@@ -72,6 +75,16 @@ const Navbar = () => {
               >
                 <PlusCircle size={18} />
                 <span className="hidden md:inline">Post Job</span>
+              </Link>
+            )}
+
+            {user.role === 'admin' && (
+              <Link
+                to="/admin/courses/upload"
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-900 text-white hover:bg-black shadow-md`}
+              >
+                <PlusCircle size={18} />
+                <span className="hidden md:inline">Upload Course</span>
               </Link>
             )}
 
