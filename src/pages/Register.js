@@ -90,8 +90,18 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'applicant' })}
-                >
-                </button></div>
+                className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${!isHospital ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Healthcare Professional
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: 'hospital' })}
+                className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${isHospital ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Hospital / Clinic
+              </button>
+            </div>
 
             <div className="space-y-4">
               <InputGroup 
