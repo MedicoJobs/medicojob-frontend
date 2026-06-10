@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./medicojob-frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "80:3000"
+    environment:
+      - REACT_APP_API_URL=http://13.235.134.64:5000 # Replace with actual backend EC2 IP or domain
+    restart: always
