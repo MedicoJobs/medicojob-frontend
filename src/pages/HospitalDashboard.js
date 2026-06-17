@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 import { 
   PlusCircle, Activity, Users, ArrowUpRight,
-  CheckCircle, FileText, Trash2, Video
+  CheckCircle, FileText, Trash2, Video, Brain, UploadCloud, AlertCircle, Sparkles
 } from 'lucide-react';
 
 const HospitalDashboard = () => {
@@ -13,6 +13,10 @@ const HospitalDashboard = () => {
   const [myJobs, setMyJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [resumeAnalysis, setResumeAnalysis] = useState(null);
+  const [resumeLoading, setResumeLoading] = useState(false);
+  const [resumeError, setResumeError] = useState('');
 
   useEffect(() => {
     fetchMyJobs();
@@ -46,6 +50,42 @@ const HospitalDashboard = () => {
       alert('Failed to delete job');
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleResumeAnalyze = async (event) => {
+    event.preventDefault();
+    if (!resumeFile) {
+      setResumeError('Choose a PDF, DOCX, or TXT resume first.');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setResumeError('Please login again before using resume intelligence.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', resumeFile);
+    setResumeLoading(true);
+    setResumeError('');
+    setResumeAnalysis(null);
+
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/resume/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setResumeAnalysis(res.data);
+    } catch (err) {
+      console.error('Resume intelligence failed', err);
+      const detail = err.response?.data?.detail || err.response?.data?.message;
+      setResumeError(detail || 'Resume intelligence service is not reachable. Confirm the resume service is deployed and gateway routing is enabled.');
+    } finally {
+      setResumeLoading(false);
     }
   };
 
@@ -116,6 +156,116 @@ const HospitalDashboard = () => {
           <h3 className="text-2xl font-black tracking-tight italic">Compliant & Active</h3>
         </div>
       </div>
+
+      <section className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-12">
+        <div className="p-8 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 text-emerald-600">
+              <Brain size={22} />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-slate-900">Resume Intelligence</h2>
+              <p className="text-sm text-slate-500 font-bold">Screen healthcare resumes and identify stronger matches faster.</p>
+            </div>
+          </div>
+          <form onSubmit={handleResumeAnalyze} className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <input
+              type="file"
+              accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+              onChange={(event) => setResumeFile(event.target.files?.[0] || null)}
+              className="block w-full sm:w-80 text-sm text-slate-600 font-bold file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+            />
+            <button
+              type="submit"
+              disabled={resumeLoading}
+              className="btn-primary flex items-center justify-center gap-2 py-3 px-6 disabled:opacity-60"
+            >
+              <UploadCloud size={18} />
+              {resumeLoading ? 'Analyzing...' : 'Analyze Resume'}
+            </button>
+          </form>
+        </div>
+
+        {resumeError && (
+          <div className="mx-8 mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 font-bold text-sm flex items-start gap-3">
+            <AlertCircle size={18} className="mt-0.5 shrink-0" />
+            {resumeError}
+          </div>
+        )}
+
+        {resumeAnalysis ? (
+          <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+                <div>
+                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Candidate</p>
+                  <h3 className="text-2xl font-black text-slate-900">{resumeAnalysis.name || 'Unnamed Candidate'}</h3>
+                  <p className="text-slate-500 font-bold mt-1">{resumeAnalysis.candidate_summary}</p>
+                </div>
+                <div className="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-2xl px-5 py-3 text-center">
+                  <p className="text-[10px] font-black uppercase tracking-widest">Score</p>
+                  <p className="text-3xl font-black">{resumeAnalysis.resume_score || 0}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Specialization</p>
+                  <p className="font-black text-slate-900">{resumeAnalysis.specialization || 'Not found'}</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Seniority</p>
+                  <p className="font-black text-slate-900">{resumeAnalysis.seniority_level}</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Experience</p>
+                  <p className="font-black text-slate-900">{resumeAnalysis.experience_years ?? 'Not found'} years</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Registration</p>
+                  <p className="font-black text-slate-900">{resumeAnalysis.nmc_registration || resumeAnalysis.state_medical_council_registration || resumeAnalysis.nursing_council_registration || 'Not found'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <Sparkles size={14} />
+                  Recommended Roles
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {(resumeAnalysis.recommended_roles || []).map((role) => (
+                    <span key={role} className="bg-blue-50 text-blue-700 border border-blue-100 rounded-xl px-3 py-2 text-xs font-black">
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-3">Missing Information</p>
+                {(resumeAnalysis.missing_information || []).length ? (
+                  <div className="space-y-2">
+                    {resumeAnalysis.missing_information.map((item) => (
+                      <div key={item} className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+                    No major gaps detected
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-8 text-sm text-slate-500 font-bold">
+            Upload a resume to generate candidate summary, seniority, score, missing information, and recommended roles.
+          </div>
+        )}
+      </section>
 
       <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
         <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
