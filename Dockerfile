@@ -1,19 +1,21 @@
-FROM node:18-alpine
+FROM node:22-alpine AS build
 
-WORKDIR /usr/src/app
-
+WORKDIR /app
 COPY package*.json ./
-
-RUN npm install
+RUN npm ci
 
 COPY public ./public
 COPY src ./src
 COPY postcss.config.js tailwind.config.js ./
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+RUN npm run build
 
-RUN chown -R node:node /usr/src/app
+FROM nginx:1.27-alpine AS runner
 
-USER node
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
 
-EXPOSE 3000
+EXPOSE 80
 
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
