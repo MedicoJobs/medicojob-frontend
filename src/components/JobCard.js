@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { MapPin, DollarSign, Calendar, Building2, ArrowRight, BadgeCheck } from 'lucide-react';
+import { MapPin, DollarSign, Calendar, Building2, ArrowRight, BadgeCheck, Clock } from 'lucide-react';
 
 const JobCard = ({ job }) => {
   const isEmergency = job.type === 'emergency';
@@ -30,7 +30,7 @@ const JobCard = ({ job }) => {
             <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center">
               <Building2 size={12} className="text-slate-400" />
             </div>
-            <span>Hospital Network</span>
+            <span>{job.hospitalName || 'Hospital Network'}</span>
             <BadgeCheck size={14} className="text-blue-500" />
           </div>
         </div>
@@ -49,6 +49,14 @@ const JobCard = ({ job }) => {
           </div>
           <span>${job.salary.toLocaleString()}</span>
         </div>
+        {job.experienceRequired && (
+          <div className="col-span-2 flex items-center gap-3 text-slate-600 text-sm font-semibold bg-slate-50 p-3 rounded-2xl">
+            <div className="text-emerald-500">
+              <Clock size={16} />
+            </div>
+            <span>{job.experienceRequired}</span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-50">
@@ -76,6 +84,8 @@ JobCard.propTypes = {
     title: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
     salary: PropTypes.number.isRequired,
+    hospitalName: PropTypes.string,
+    experienceRequired: PropTypes.string,
     expiryDate: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.instanceOf(Date),

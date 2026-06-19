@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
-import { MapPin, Calendar, Building2, ArrowLeft, ShieldCheck, Clock, Share2, Heart, CheckCircle } from 'lucide-react';
+import { MapPin, Calendar, Building2, ArrowLeft, ShieldCheck, Clock, Share2, Heart, CheckCircle, UploadCloud } from 'lucide-react';
 import { isWishlisted, toggleWishlist } from '../utils/wishlist';
 
 const JobDetails = () => {
@@ -16,6 +16,7 @@ const JobDetails = () => {
   const [applying, setApplying] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [saved, setSaved] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -57,18 +58,40 @@ const JobDetails = () => {
       setMessage({ text: 'Hospital accounts can post jobs but cannot apply to them.', type: 'error' });
       return;
     }
+    if (!resumeFile && !user.resumeAnalysis) {
+      setMessage({ text: 'Please attach your resume here or upload it once from your profile before applying.', type: 'error' });
+      return;
+    }
 
     setApplying(true);
     try {
       const token = localStorage.getItem('token');
+      let resumeAnalysis = user.resumeAnalysis;
+      if (resumeFile) {
+        const resumeForm = new FormData();
+        resumeForm.append('file', resumeFile);
+        const analysisRes = await axios.post(`${API_BASE_URL}/api/resume/upload`, resumeForm, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        resumeAnalysis = analysisRes.data;
+      }
+
       await axios.post(`${API_BASE_URL}/jobs/${id}/apply`, {
         name: user.name,
         email: user.email,
         specialization: user.specialization,
+        resumeAnalysis,
+        resumeScore: resumeAnalysis.resume_score,
+        resumeSeniority: resumeAnalysis.seniority_level,
+        recommendedRoles: resumeAnalysis.recommended_roles,
+        missingInformation: resumeAnalysis.missing_information,
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage({ text: 'Success! Your application has been sent.', type: 'success' });
+      setMessage({ text: 'Success! Your resume was scanned and your application has been sent.', type: 'success' });
       // Refresh job data to reflect new application
       const res = await axios.get(`${API_BASE_URL}/jobs/${id}`);
       setJob(res.data);
@@ -166,7 +189,7 @@ const JobDetails = () => {
                   <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
                     <Building2 size={20} />
                   </div>
-                  <span>Healthcare Provider Network</span>
+                  <span>{job.hospitalName || 'Healthcare Provider Network'}</span>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600 font-bold">
                   <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-emerald-500">
@@ -231,6 +254,15 @@ const JobDetails = () => {
                 </div>
                 <span className="font-black text-slate-900 capitalize">{job.type}</span>
               </div>
+              {job.experienceRequired && (
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                  <div className="flex items-center gap-3 text-slate-500 font-bold text-sm">
+                    <ShieldCheck size={18} />
+                    <span>Experience</span>
+                  </div>
+                  <span className="font-black text-slate-900 text-right">{job.experienceRequired}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
                 <div className="flex items-center gap-3 text-slate-500 font-bold text-sm">
                   <Calendar size={18} />
@@ -251,6 +283,32 @@ const JobDetails = () => {
             {hasApplied && (
               <div className="p-4 rounded-2xl mb-6 bg-blue-50 text-blue-700 font-bold text-sm">
                 Application Status: {applicationStatusLabel}
+              </div>
+            )}
+
+            {!hasApplied && user?.role !== 'hospital' && (
+              <div className="mb-6">
+                <label htmlFor="resumeFile" className="block text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2">
+                  Resume for AI Screening
+                </label>
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                  {user.resumeAnalysis && !resumeFile && (
+                    <div className="mb-3 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-xl px-3 py-2 text-xs font-black">
+                      Profile resume already scored: {user.resumeAnalysis.resume_score}/100
+                    </div>
+                  )}
+                  <input
+                    id="resumeFile"
+                    type="file"
+                    accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                    onChange={(event) => setResumeFile(event.target.files?.[0] || null)}
+                    className="block w-full text-sm text-slate-600 font-bold file:mr-3 file:py-2.5 file:px-3 file:rounded-xl file:border-0 file:bg-white file:text-slate-700 hover:file:bg-slate-100"
+                  />
+                  <p className="text-[10px] text-slate-400 font-bold mt-3 flex items-center gap-1.5">
+                    <UploadCloud size={12} />
+                    Resume is scanned automatically and shared with the recruiter as a score.
+                  </p>
+                </div>
               </div>
             )}
 

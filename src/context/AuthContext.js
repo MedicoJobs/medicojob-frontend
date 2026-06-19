@@ -16,6 +16,7 @@ const normalizeUser = (user) => {
     phone: user.phone || '',
     bio: user.bio || '',
     skills: user.skills || [],
+    resumeAnalysis: user.resumeAnalysis || null,
     preferredLocations: user.preferredLocations || [],
     experience: user.experience || 0,
     licenseNumber: user.licenseNumber || '',

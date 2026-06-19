@@ -20,7 +20,12 @@ const filterJobsBySearchAndSalary = (jobs, filters) => {
 
   if (filters.search) {
     const searchTerm = filters.search.toLowerCase();
-    filtered = filtered.filter(job => job.title.toLowerCase().includes(searchTerm));
+    filtered = filtered.filter(job => [
+      job.title,
+      job.hospitalName,
+      job.experienceRequired,
+      job.specialization,
+    ].some(value => String(value || '').toLowerCase().includes(searchTerm)));
   }
 
   if (filters.minSalary) {
