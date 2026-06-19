@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 import { 
   PlusCircle, Activity, Users, ArrowUpRight,
-  CheckCircle, FileText, Trash2, Video, Brain, UploadCloud, AlertCircle, Sparkles
+  CheckCircle, FileText, Trash2, Video, Sparkles, Search, BadgeCheck, BarChart3, CalendarDays, ArrowRight
 } from 'lucide-react';
 
 const HospitalDashboard = () => {
@@ -13,10 +13,10 @@ const HospitalDashboard = () => {
   const [myJobs, setMyJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
-  const [resumeFile, setResumeFile] = useState(null);
-  const [resumeAnalysis, setResumeAnalysis] = useState(null);
-  const [resumeLoading, setResumeLoading] = useState(false);
-  const [resumeError, setResumeError] = useState('');
+  const [copilotQuery, setCopilotQuery] = useState('Show me top cardiologists with 10+ years experience');
+  const [copilotResult, setCopilotResult] = useState(null);
+  const [copilotLoading, setCopilotLoading] = useState(false);
+  const [copilotError, setCopilotError] = useState('');
 
   useEffect(() => {
     fetchMyJobs();
@@ -53,44 +53,53 @@ const HospitalDashboard = () => {
     }
   };
 
-  const handleResumeAnalyze = async (event) => {
+  const runRecruiterCopilot = async (event) => {
     event.preventDefault();
-    if (!resumeFile) {
-      setResumeError('Choose a PDF, DOCX, or TXT resume first.');
-      return;
-    }
+    if (!copilotQuery.trim()) return;
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setResumeError('Please login again before using resume intelligence.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', resumeFile);
-    setResumeLoading(true);
-    setResumeError('');
-    setResumeAnalysis(null);
-
+    setCopilotLoading(true);
+    setCopilotError('');
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/resume/upload`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setResumeAnalysis(res.data);
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        `${API_BASE_URL}/api/resume/copilot/search`,
+        { query: copilotQuery.trim(), limit: 5 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setCopilotResult(res.data);
     } catch (err) {
-      console.error('Resume intelligence failed', err);
-      const detail = err.response?.data?.detail || err.response?.data?.message;
-      setResumeError(detail || 'Resume intelligence service is not reachable. Confirm the resume service is deployed and gateway routing is enabled.');
+      console.error('Recruiter copilot failed', err);
+      setCopilotError('Copilot could not search candidates right now.');
     } finally {
-      setResumeLoading(false);
+      setCopilotLoading(false);
     }
   };
 
   const totalApplicants = myJobs.reduce((acc, job) => acc + (job.applications?.length || 0), 0);
   const openJobs = myJobs.filter((job) => job.status === 'open').length;
+  const allApplications = myJobs.flatMap((job) => job.applications || []);
+  const atsStages = [
+    { key: 'applied', label: 'Applied' },
+    { key: 'screening', label: 'Screening' },
+    { key: 'shortlisted', label: 'Shortlisted' },
+    { key: 'interview', label: 'Interview' },
+    { key: 'offer', label: 'Offer' },
+    { key: 'joined', label: 'Joined' },
+    { key: 'rejected', label: 'Rejected' },
+  ];
+  const atsCounts = {
+    applied: allApplications.filter((app) => app.status === 'applied').length,
+    screening: allApplications.filter((app) => app.status === 'screening').length,
+    shortlisted: allApplications.filter((app) => app.status === 'shortlisted').length,
+    interview: allApplications.filter((app) => ['interview_scheduled', 'interview_completed'].includes(app.status)).length,
+    offer: allApplications.filter((app) => app.status === 'offer').length,
+    joined: allApplications.filter((app) => ['joined', 'hired'].includes(app.status)).length,
+    rejected: allApplications.filter((app) => app.status === 'rejected').length,
+  };
+  const scheduledInterviews = myJobs
+    .flatMap((job) => (job.applications || []).map((application) => ({ job, application })))
+    .filter(({ application }) => application.status === 'interview_scheduled' && application.interview?.scheduledAt && !application.interview?.expiredAt)
+    .sort((a, b) => new Date(a.application.interview.scheduledAt) - new Date(b.application.interview.scheduledAt));
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 animate-fade-in">
@@ -157,114 +166,205 @@ const HospitalDashboard = () => {
         </div>
       </div>
 
-      <section className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-12">
-        <div className="p-8 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-slate-50/50">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 text-emerald-600">
-              <Brain size={22} />
-            </div>
-            <div>
-              <h2 className="text-xl font-black text-slate-900">Resume Intelligence</h2>
-              <p className="text-sm text-slate-500 font-bold">Screen healthcare resumes and identify stronger matches faster.</p>
-            </div>
+      <section className="mb-12 bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
+        <div className="p-8 border-b border-slate-100 bg-slate-50/60">
+          <p className="text-xs font-black text-emerald-600 uppercase tracking-widest">Applicant Tracking System</p>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Hiring pipeline</h2>
+        </div>
+        <div className="p-8 overflow-x-auto">
+          <div className="flex items-stretch min-w-max">
+            {atsStages.map((stage, index) => (
+              <React.Fragment key={stage.key}>
+                <div className="w-40 border border-slate-100 rounded-2xl p-5 bg-slate-50">
+                  <p className="text-4xl font-black text-slate-900">{atsCounts[stage.key]}</p>
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">{stage.label}</p>
+                </div>
+                {index < atsStages.length - 1 && (
+                  <div className="flex items-center px-3 text-slate-300"><ArrowRight size={20} /></div>
+                )}
+              </React.Fragment>
+            ))}
           </div>
-          <form onSubmit={handleResumeAnalyze} className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-            <input
-              type="file"
-              accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-              onChange={(event) => setResumeFile(event.target.files?.[0] || null)}
-              className="block w-full sm:w-80 text-sm text-slate-600 font-bold file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
-            />
-            <button
-              type="submit"
-              disabled={resumeLoading}
-              className="btn-primary flex items-center justify-center gap-2 py-3 px-6 disabled:opacity-60"
-            >
-              <UploadCloud size={18} />
-              {resumeLoading ? 'Analyzing...' : 'Analyze Resume'}
-            </button>
-          </form>
+        </div>
+      </section>
+
+      <section className="mb-12 bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
+        <div className="p-8 border-b border-slate-100 bg-slate-50/60">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <Sparkles size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-black text-emerald-600 uppercase tracking-widest">Recruiter Copilot Agent</p>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">AI candidate search</h2>
+              </div>
+            </div>
+            <form onSubmit={runRecruiterCopilot} className="flex flex-col sm:flex-row gap-3 w-full lg:max-w-2xl">
+              <input
+                value={copilotQuery}
+                onChange={(event) => setCopilotQuery(event.target.value)}
+                className="flex-1 px-5 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+                placeholder="Show me top cardiologists with 10+ years experience"
+              />
+              <button
+                type="submit"
+                disabled={copilotLoading}
+                className="btn-primary flex items-center justify-center gap-2 px-6 py-3 disabled:opacity-60"
+              >
+                <Search size={18} />
+                {copilotLoading ? 'Searching' : 'Search'}
+              </button>
+            </form>
+          </div>
+          {copilotError && <p className="mt-4 text-sm font-bold text-red-600">{copilotError}</p>}
         </div>
 
-        {resumeError && (
-          <div className="mx-8 mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 font-bold text-sm flex items-start gap-3">
-            <AlertCircle size={18} className="mt-0.5 shrink-0" />
-            {resumeError}
-          </div>
-        )}
-
-        {resumeAnalysis ? (
-          <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
-                <div>
-                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Candidate</p>
-                  <h3 className="text-2xl font-black text-slate-900">{resumeAnalysis.name || 'Unnamed Candidate'}</h3>
-                  <p className="text-slate-500 font-bold mt-1">{resumeAnalysis.candidate_summary}</p>
-                </div>
-                <div className="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-2xl px-5 py-3 text-center">
-                  <p className="text-[10px] font-black uppercase tracking-widest">Score</p>
-                  <p className="text-3xl font-black">{resumeAnalysis.resume_score || 0}</p>
-                </div>
+        {copilotResult && (
+          <div className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div className="border border-slate-100 rounded-2xl p-5">
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Found</p>
+                <p className="text-3xl font-black text-slate-900">{copilotResult.total_candidates}</p>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Specialization</p>
-                  <p className="font-black text-slate-900">{resumeAnalysis.specialization || 'Not found'}</p>
-                </div>
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Seniority</p>
-                  <p className="font-black text-slate-900">{resumeAnalysis.seniority_level}</p>
-                </div>
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Experience</p>
-                  <p className="font-black text-slate-900">{resumeAnalysis.experience_years ?? 'Not found'} years</p>
-                </div>
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-2">Registration</p>
-                  <p className="font-black text-slate-900">{resumeAnalysis.nmc_registration || resumeAnalysis.state_medical_council_registration || resumeAnalysis.nursing_council_registration || 'Not found'}</p>
-                </div>
+              <div className="border border-slate-100 rounded-2xl p-5">
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Best Match</p>
+                <p className="text-3xl font-black text-emerald-600">{copilotResult.best_match_score}%</p>
+              </div>
+              <div className="border border-slate-100 rounded-2xl p-5">
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Intent</p>
+                <p className="text-sm font-black text-slate-800">
+                  {[copilotResult.intent.specialization, copilotResult.intent.min_experience_years ? `${copilotResult.intent.min_experience_years}+ yrs` : null].filter(Boolean).join(' · ') || 'Broad search'}
+                </p>
               </div>
             </div>
 
-            <div className="space-y-5">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+              <div className="xl:col-span-2">
+                <div className="flex items-center gap-2 mb-4">
+                  <BadgeCheck size={20} className="text-emerald-600" />
+                  <h3 className="text-lg font-black text-slate-900">Top candidates</h3>
+                </div>
+                <div className="space-y-3">
+                  {copilotResult.top_candidates.map((candidate, index) => (
+                    <div key={candidate.id} className="border border-slate-100 rounded-2xl p-5 hover:border-emerald-200 transition-colors">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">#{index + 1}</p>
+                          <h4 className="text-xl font-black text-slate-900">{candidate.name}</h4>
+                          <p className="text-sm text-slate-500 font-bold">
+                            {candidate.specialization || 'Healthcare'} · {candidate.experience_years ?? 'N/A'} yrs · {candidate.location || 'Location N/A'}
+                          </p>
+                        </div>
+                        <div className="text-left md:text-right">
+                          <p className="text-2xl font-black text-emerald-600">{candidate.match_score}%</p>
+                          <p className="text-xs font-black text-slate-400 uppercase">{candidate.shortlist_recommendation}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {candidate.match_reasons.map((reason) => (
+                          <span key={reason} className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">{reason}</span>
+                        ))}
+                      </div>
+                      <Link
+                        to={`/hospital/candidates/${candidate.id}`}
+                        className="inline-flex items-center gap-2 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-5 py-2.5 rounded-xl transition-all"
+                      >
+                        Open Profile
+                        <ArrowUpRight size={14} />
+                      </Link>
+                    </div>
+                  ))}
+                  {copilotResult.top_candidates.length === 0 && (
+                    <div className="border border-dashed border-slate-200 rounded-2xl p-8 text-center text-slate-500 font-bold">
+                      No candidates matched this search.
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div>
-                <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <Sparkles size={14} />
-                  Recommended Roles
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(resumeAnalysis.recommended_roles || []).map((role) => (
-                    <span key={role} className="bg-blue-50 text-blue-700 border border-blue-100 rounded-xl px-3 py-2 text-xs font-black">
-                      {role}
-                    </span>
+                <div className="flex items-center gap-2 mb-4">
+                  <BarChart3 size={20} className="text-blue-600" />
+                  <h3 className="text-lg font-black text-slate-900">Hiring insights</h3>
+                </div>
+                <div className="space-y-4">
+                  {copilotResult.shortlist_suggestions.map((suggestion) => (
+                    <div key={suggestion} className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm font-bold text-emerald-900">
+                      {suggestion}
+                    </div>
+                  ))}
+                  {copilotResult.hiring_insights.map((insight) => (
+                    <div key={insight} className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm font-bold text-blue-900">
+                      {insight}
+                    </div>
                   ))}
                 </div>
               </div>
-              <div>
-                <p className="text-xs text-slate-400 font-black uppercase tracking-widest mb-3">Missing Information</p>
-                {(resumeAnalysis.missing_information || []).length ? (
-                  <div className="space-y-2">
-                    {resumeAnalysis.missing_information.map((item) => (
-                      <div key={item} className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
-                    No major gaps detected
-                  </p>
-                )}
-              </div>
             </div>
           </div>
-        ) : (
-          <div className="p-8 text-sm text-slate-500 font-bold">
-            Upload a resume to generate candidate summary, seniority, score, missing information, and recommended roles.
-          </div>
         )}
+      </section>
+
+      <section className="mb-12 bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
+        <div className="p-8 border-b border-slate-100 bg-slate-50/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center">
+              <CalendarDays size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-purple-600 uppercase tracking-widest">Interview Calendar</p>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Scheduled interviews</h2>
+            </div>
+          </div>
+          <span className="text-xs font-black text-slate-500 bg-white border border-slate-200 rounded-xl px-4 py-2">
+            {scheduledInterviews.length} upcoming
+          </span>
+        </div>
+
+        <div className="p-8">
+          {scheduledInterviews.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {scheduledInterviews.map(({ job, application }) => (
+                <div key={`${job._id}-${application.doctorId}`} className="border border-slate-100 rounded-2xl p-5 bg-white hover:border-purple-200 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{job.title}</p>
+                      <h3 className="text-lg font-black text-slate-900">{application.applicantName || 'Applicant'}</h3>
+                      <p className="text-sm font-bold text-slate-500">{job.specialization}</p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-sm font-black text-purple-700">{new Date(application.interview.scheduledAt).toLocaleString()}</p>
+                      <p className="text-xs font-bold text-slate-400">{application.interview.durationMinutes || 30} minutes</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {application.interview.meetLink && !application.interview.expiredAt && (
+                      <a href={application.interview.meetLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2">
+                        <Video size={14} />
+                        Meet Link
+                      </a>
+                    )}
+                    {application.interview.calendarLink && (
+                      <a href={application.interview.calendarLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-xs font-black text-purple-700 bg-purple-50 border border-purple-100 rounded-xl px-4 py-2">
+                        <CalendarDays size={14} />
+                        Add Calendar
+                      </a>
+                    )}
+                    <Link to={`/hospital/jobs/${job._id}/applications`} className="inline-flex items-center gap-2 text-xs font-black text-slate-600 bg-slate-100 rounded-xl px-4 py-2">
+                      Review Queue
+                      <ArrowUpRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-slate-200 rounded-2xl p-8 text-center">
+              <p className="text-slate-500 font-bold">Shortlist a candidate, then schedule interview date and time from the review queue.</p>
+            </div>
+          )}
+        </div>
       </section>
 
       <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
@@ -307,12 +407,16 @@ const HospitalDashboard = () => {
                       <div>
                         <p className="font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{job.title}</p>
                         <p className="text-xs text-slate-400 font-bold mt-0.5">{job.specialization}</p>
+                        <p className="text-xs text-slate-400 font-bold mt-0.5">{job.hospitalName || 'Hospital name not set'}</p>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                        <span className="text-xs font-black text-slate-500 bg-slate-100 px-3 py-1 rounded-lg uppercase">
                          {job.type}
                        </span>
+                       {job.experienceRequired && (
+                         <p className="text-xs font-bold text-slate-400 mt-2">{job.experienceRequired}</p>
+                       )}
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-2">
@@ -371,3 +475,4 @@ const HospitalDashboard = () => {
 };
 
 export default HospitalDashboard;
+

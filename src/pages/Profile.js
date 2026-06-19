@@ -98,8 +98,25 @@ const Profile = () => {
       const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/resume`, formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
-      login(res.data.user, token);
-      setMessage({ text: 'Resume uploaded successfully!', type: 'success' });
+      let nextUser = res.data.user;
+      try {
+        const analysisForm = new FormData();
+        analysisForm.append('file', file);
+        const analysisRes = await axios.post(`${API_BASE_URL}/api/resume/upload`, analysisForm, {
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        });
+        const profileRes = await axios.put(`${API_BASE_URL}/auth/profile`, {
+          resumeAnalysis: analysisRes.data,
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        nextUser = profileRes.data;
+        setMessage({ text: 'Resume uploaded and AI scoring completed.', type: 'success' });
+      } catch (analysisErr) {
+        console.error('Resume AI scoring failed.', analysisErr);
+        setMessage({ text: 'Resume uploaded, but AI scoring is unavailable right now.', type: 'error' });
+      }
+      login(nextUser, token);
     } catch (err) {
       console.error(err);
       setMessage({ text: 'Failed to upload resume', type: 'error' });

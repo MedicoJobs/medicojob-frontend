@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
-import { Briefcase, MapPin, DollarSign, Calendar, AlignLeft, Tag, CheckCircle } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
+import { Briefcase, MapPin, DollarSign, Calendar, AlignLeft, Tag, CheckCircle, Building2, Clock } from 'lucide-react';
 
 const SPECIALIZATIONS = [
   'General Medicine', 'Cardiology', 'Neurology', 'Orthopedics',
@@ -15,9 +16,12 @@ const SPECIALIZATIONS = [
 
 const PostJob = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     title: '',
+    hospitalName: user?.name || '',
     specialization: '',
+    experienceRequired: '',
     salary: '',
     location: '',
     type: 'full-time',
@@ -39,6 +43,8 @@ const PostJob = () => {
       await axios.post(`${API_BASE_URL}/jobs`, {
         ...formData,
         title: formData.title.trim(),
+        hospitalName: formData.hospitalName.trim(),
+        experienceRequired: formData.experienceRequired.trim(),
         location: formData.location.trim(),
         description: formData.description.trim(),
         requirements: formData.requirements.trim(),
@@ -78,6 +84,14 @@ const PostJob = () => {
             />
           </div>
           <div>
+            <FormLabel htmlFor="job-post-hospital-name" icon={<Building2 size={16} />}>Hospital Name</FormLabel>
+            <input
+              id="job-post-hospital-name"
+              type="text" name="hospitalName" value={formData.hospitalName} onChange={handleChange}
+              className="input-field" placeholder="e.g. CityCare Hospital"
+            />
+          </div>
+          <div>
             <FormLabel htmlFor="job-post-specialization" icon={<Tag size={16} />}>Specialization *</FormLabel>
             <select id="job-post-specialization" name="specialization" required value={formData.specialization} onChange={handleChange} className="input-field bg-white">
               <option value="" disabled>Select Specialization</option>
@@ -91,6 +105,14 @@ const PostJob = () => {
               <option value="part-time">Part-Time</option>
               <option value="emergency">Emergency / Locum</option>
             </select>
+          </div>
+          <div>
+            <FormLabel htmlFor="job-post-experience" icon={<Clock size={16} />}>Experience Required</FormLabel>
+            <input
+              id="job-post-experience"
+              type="text" name="experienceRequired" value={formData.experienceRequired} onChange={handleChange}
+              className="input-field" placeholder="e.g. 3-5 years, Fresher, 10+ years"
+            />
           </div>
           <div>
             <FormLabel htmlFor="job-post-location" icon={<MapPin size={16} />}>Location *</FormLabel>
@@ -149,6 +171,8 @@ const PostJob = () => {
             <div className="flex flex-wrap gap-3 text-sm text-slate-500 font-bold">
               {formData.specialization && <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-xl">{formData.specialization}</span>}
               {formData.type && <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-xl capitalize">{formData.type}</span>}
+              {formData.hospitalName && <span>{formData.hospitalName}</span>}
+              {formData.experienceRequired && <span>{formData.experienceRequired}</span>}
               {formData.location && <span>📍 {formData.location}</span>}
               {formData.salary && <span>💵 ${Number(formData.salary).toLocaleString()}</span>}
             </div>

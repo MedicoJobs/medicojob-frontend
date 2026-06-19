@@ -7,12 +7,18 @@ import { API_BASE_URL } from '../utils/api';
 import {
   ArrowLeft, User, Star, Phone,
   Mail, Eye, XCircle, ShieldCheck, Send,
-  Zap
+  Zap, Brain, AlertTriangle, CalendarDays, CheckCircle, Video
 } from 'lucide-react';
 
 const STATUS_STYLES = {
   applied:     'bg-blue-50 text-blue-600 border-blue-100',
+  screening: 'bg-cyan-50 text-cyan-600 border-cyan-100',
   shortlisted: 'bg-amber-50 text-amber-600 border-amber-100',
+  interview_scheduled: 'bg-purple-50 text-purple-600 border-purple-100',
+  interview_completed: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+  offer: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  hired: 'bg-green-50 text-green-700 border-green-100',
+  joined: 'bg-green-50 text-green-700 border-green-100',
   rejected:    'bg-red-50 text-red-600 border-red-100',
 };
 
@@ -75,7 +81,57 @@ FeedbackModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
 };
 
-function ApplicantModal({ applicant, reviews, hospitalId, onReviewSubmit, onClose }) {
+function ScheduleInterviewModal({ onConfirm, onCancel }) {
+  const [scheduledAt, setScheduledAt] = useState('');
+  const [durationMinutes, setDurationMinutes] = useState(30);
+  const [mode, setMode] = useState('google_meet');
+  const [location, setLocation] = useState('');
+  const [notes, setNotes] = useState('');
+
+  return (
+    <dialog open className="fixed inset-0 m-0 max-h-none max-w-none border-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-white rounded-[2rem] max-w-lg w-full shadow-2xl p-8">
+        <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6">
+          <CalendarDays size={24} />
+        </div>
+        <h3 className="text-xl font-black text-slate-900 mb-2">Schedule Interview</h3>
+        <p className="text-slate-500 font-bold text-sm mb-6">Create interview time, calendar link, and meeting link.</p>
+
+        <div className="space-y-4">
+          <input type="datetime-local" value={scheduledAt} onChange={(event) => setScheduledAt(event.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-emerald-500" />
+          <div className="grid grid-cols-2 gap-3">
+            <input type="number" min="15" step="15" value={durationMinutes} onChange={(event) => setDurationMinutes(event.target.value)} className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-emerald-500" />
+            <select value={mode} onChange={(event) => setMode(event.target.value)} className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-emerald-500">
+              <option value="google_meet">Video Meeting</option>
+              <option value="phone">Phone</option>
+              <option value="in_person">In Person</option>
+            </select>
+          </div>
+          {mode !== 'google_meet' && (
+            <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder={mode === 'phone' ? 'Phone number or instructions' : 'Interview location'} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-emerald-500" />
+          )}
+          <textarea value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Interview notes or agenda..." rows="3" className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-emerald-500" />
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button onClick={() => onConfirm({ scheduledAt, durationMinutes: Number(durationMinutes), mode, location, notes })} disabled={!scheduledAt} className="flex-grow py-3 rounded-xl font-black text-sm text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-40">
+            Schedule
+          </button>
+          <button onClick={onCancel} className="px-6 py-3 bg-slate-100 text-slate-500 rounded-xl font-black text-sm hover:bg-slate-200">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+ScheduleInterviewModal.propTypes = {
+  onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
+
+function ApplicantModal({ applicant, application, reviews, hospitalId, onReviewSubmit, onClose }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState('');
@@ -153,6 +209,67 @@ function ApplicantModal({ applicant, reviews, hospitalId, onReviewSubmit, onClos
 
         <div className="flex-grow p-8 overflow-y-auto bg-slate-50 relative">
           <div className="space-y-8">
+            <section className="bg-white p-8 rounded-[2rem] border border-emerald-100 shadow-sm">
+              <div className="flex items-start justify-between gap-4 mb-6">
+                <div>
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <Brain size={14} className="text-emerald-600" />
+                    Resume Intelligence
+                  </h4>
+                  <p className="text-slate-600 text-sm font-bold">
+                    {application?.resumeAnalysis?.candidate_summary || 'No resume analysis is attached to this application.'}
+                  </p>
+                </div>
+                <div className="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-2xl px-5 py-3 text-center shrink-0">
+                  <p className="text-[10px] font-black uppercase tracking-widest">Score</p>
+                  <p className="text-3xl font-black">{application?.resumeScore ?? application?.resumeAnalysis?.resume_score ?? '-'}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Seniority</p>
+                  <p className="font-black text-slate-900">{application?.resumeSeniority || application?.resumeAnalysis?.seniority_level || 'Not scored'}</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Experience</p>
+                  <p className="font-black text-slate-900">{application?.resumeAnalysis?.experience_years ?? 'Not found'} years</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Specialization</p>
+                  <p className="font-black text-slate-900">{application?.resumeAnalysis?.specialization || applicant.specialization || 'Not found'}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2">Recommended Roles</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(application?.recommendedRoles || application?.resumeAnalysis?.recommended_roles || []).map((role) => (
+                      <span key={role} className="bg-blue-50 text-blue-700 border border-blue-100 rounded-xl px-3 py-2 text-[10px] font-black uppercase">
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {(application?.missingInformation || application?.resumeAnalysis?.missing_information || []).length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 flex items-center gap-1">
+                      <AlertTriangle size={12} />
+                      Missing Information
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {(application?.missingInformation || application?.resumeAnalysis?.missing_information || []).map((item) => (
+                        <span key={item} className="bg-amber-50 text-amber-700 border border-amber-100 rounded-xl px-3 py-2 text-[10px] font-black uppercase">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+
             <section className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4">
                  <span className="text-[8px] font-black bg-emerald-100 text-emerald-600 px-2 py-1 rounded uppercase">Trust Engine 5006</span>
@@ -254,6 +371,13 @@ ApplicantModal.propTypes = {
     preferredLocations: PropTypes.arrayOf(PropTypes.string),
     skills: PropTypes.arrayOf(PropTypes.string),
   }),
+  application: PropTypes.shape({
+    resumeAnalysis: PropTypes.object,
+    resumeScore: PropTypes.number,
+    resumeSeniority: PropTypes.string,
+    recommendedRoles: PropTypes.arrayOf(PropTypes.string),
+    missingInformation: PropTypes.arrayOf(PropTypes.string),
+  }),
   reviews: PropTypes.shape({
     averageRating: PropTypes.number,
     count: PropTypes.number,
@@ -265,6 +389,7 @@ ApplicantModal.propTypes = {
 
 ApplicantModal.defaultProps = {
   applicant: null,
+  application: null,
   reviews: null,
   hospitalId: null,
 };
@@ -279,7 +404,7 @@ const ApplicationsTracking = () => {
   const [updating, setUpdating] = useState(null);
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
   const [feedbackState, setFeedbackState] = useState({ show: false, type: '', doctorId: '' });
-  console.log('[DEBUG] Current Hospital User from Storage:', hospital);
+  const [scheduleDoctorId, setScheduleDoctorId] = useState('');
 
   useEffect(() => { fetchJobDetails(); }, [jobId]);
 
@@ -297,11 +422,11 @@ const ApplicationsTracking = () => {
           try {
             const r = await axios.get(`${API_BASE_URL}/auth/user/${id}`);
             profiles[id] = r.data;
-            const repRes = await axios.get(`${API_BASE_URL}/reviews/${id}`);
-            reputations[id] = repRes.data;
           } catch (err) {
-            console.error('Error fetching details', id, err);
+            console.error('Error fetching applicant profile', id, err);
           }
+
+          reputations[id] = { reviews: [], averageRating: 0, count: 0 };
         })
       );
       
@@ -345,6 +470,70 @@ const ApplicationsTracking = () => {
     }
   };
 
+  const handleUpdateStatusFor = async (doctorId, status) => {
+    setUpdating(doctorId + status);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(
+        `${API_BASE_URL}/jobs/${jobId}/application/${doctorId}`,
+        {
+          status,
+          rejectionReason: '',
+          nextStep: status === 'screening' ? 'Application moved to screening.' : '',
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      await fetchJobDetails();
+    } catch (err) {
+      console.error('Failed to update application status.', err);
+      alert('Failed to update status.');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const handleScheduleInterview = async (payload) => {
+    setUpdating(scheduleDoctorId + 'interview');
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `${API_BASE_URL}/jobs/${jobId}/application/${scheduleDoctorId}/interview`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setScheduleDoctorId('');
+      await fetchJobDetails();
+    } catch (err) {
+      console.error('Failed to schedule interview.', err);
+      alert('Failed to schedule interview.');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const advanceApplication = async (doctorId, action, payload = {}) => {
+    setUpdating(doctorId + action);
+    const token = localStorage.getItem('token');
+    const endpointByAction = {
+      complete: `/jobs/${jobId}/application/${doctorId}/interview/complete`,
+      offer: `/jobs/${jobId}/application/${doctorId}/offer`,
+      hire: `/jobs/${jobId}/application/${doctorId}/hire`,
+    };
+
+    try {
+      await axios.patch(`${API_BASE_URL}${endpointByAction[action]}`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await fetchJobDetails();
+    } catch (err) {
+      console.error(`Failed to ${action} application.`, err);
+      alert('Failed to update application stage.');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   if (loading) return (
     <div className="flex flex-col items-center justify-center py-32 gap-4">
       <div className="animate-spin rounded-full h-10 w-10 border-4 border-emerald-100 border-t-emerald-600"></div>
@@ -360,6 +549,7 @@ const ApplicationsTracking = () => {
       {selectedApplicantId && (
         <ApplicantModal 
           applicant={applicantProfiles[selectedApplicantId]} 
+          application={job?.applications?.find((app) => app.doctorId === selectedApplicantId)}
           reviews={applicantReputations[selectedApplicantId]}
           hospitalId={hospital?.id || hospital?._id}
           onReviewSubmit={() => {
@@ -375,6 +565,13 @@ const ApplicationsTracking = () => {
           type={feedbackState.type}
           onConfirm={handleUpdateStatus}
           onCancel={() => setFeedbackState({ show: false, type: '', doctorId: '' })}
+        />
+      )}
+
+      {scheduleDoctorId && (
+        <ScheduleInterviewModal
+          onConfirm={handleScheduleInterview}
+          onCancel={() => setScheduleDoctorId('')}
         />
       )}
 
@@ -402,6 +599,8 @@ const ApplicationsTracking = () => {
               const profile = applicantProfiles[app.doctorId] || {};
               const reputation = applicantReputations[app.doctorId] || { averageRating: 0, count: 0 };
               const isUpdating = updating?.startsWith(app.doctorId);
+              const resumeScore = app.resumeScore ?? app.resumeAnalysis?.resume_score;
+              const scoreTone = resumeScore >= 75 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : resumeScore >= 50 ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-red-50 text-red-700 border-red-100';
 
               return (
                 <tr key={app.doctorId} className="hover:bg-slate-50/40 transition-colors">
@@ -414,6 +613,10 @@ const ApplicationsTracking = () => {
                         <p className="font-black text-slate-900 text-sm group-hover:text-emerald-600 transition-colors">{profile.name || 'Unknown'}</p>
                         <div className="flex items-center gap-1 text-[10px] text-amber-500 font-black">
                            <Star size={10} fill="currentColor" /> {reputation.averageRating?.toFixed(1)} ({reputation.count})
+                        </div>
+                        <div className={`inline-flex items-center gap-1 mt-1 px-2 py-1 rounded-lg border text-[10px] font-black ${resumeScore === undefined || resumeScore === null ? 'bg-slate-50 text-slate-400 border-slate-100' : scoreTone}`}>
+                          <Brain size={10} />
+                          AI Score: {resumeScore ?? 'Pending'}
                         </div>
                       </div>
                     </button>
@@ -432,6 +635,31 @@ const ApplicationsTracking = () => {
                       {app.status === 'shortlisted' && app.nextStep && (
                         <p className="text-[10px] text-amber-600 font-bold truncate max-w-[150px]" title={app.nextStep}>Next: {app.nextStep}</p>
                       )}
+                      {app.status === 'interview_scheduled' && app.interview?.scheduledAt && (
+                        <div className="flex flex-col gap-1">
+                          <p className="text-[10px] text-purple-600 font-bold truncate max-w-[180px]">
+                            {new Date(app.interview.scheduledAt).toLocaleString()}
+                          </p>
+                          <div className="flex gap-2">
+                            {app.interview.meetLink && !app.interview.expiredAt && (
+                              <a href={app.interview.meetLink} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 font-black inline-flex items-center gap-1">
+                                <Video size={10} /> Meet
+                              </a>
+                            )}
+                            {app.interview.expiredAt && (
+                              <span className="text-[10px] text-red-500 font-black">Meet Expired</span>
+                            )}
+                            {app.interview.calendarLink && (
+                              <a href={app.interview.calendarLink} target="_blank" rel="noreferrer" className="text-[10px] text-purple-600 font-black inline-flex items-center gap-1">
+                                <CalendarDays size={10} /> Calendar
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      {app.status === 'offer' && app.nextStep && (
+                        <p className="text-[10px] text-emerald-600 font-bold truncate max-w-[180px]" title={app.nextStep}>Offer: {app.nextStep}</p>
+                      )}
                     </div>
                   </td>
                   <td className="px-8 py-6">
@@ -443,8 +671,27 @@ const ApplicationsTracking = () => {
                         <Eye size={14} /> Profile
                       </button>
                       
-                      {app.status === 'applied' && (
-                        <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap justify-end">
+                        {app.status === 'applied' && (
+                          <>
+                          <button
+                            onClick={() => handleUpdateStatusFor(app.doctorId, 'screening')}
+                            disabled={isUpdating}
+                            className="bg-cyan-100 text-cyan-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-cyan-200 transition-all"
+                          >
+                            Screening
+                          </button>
+                          <button
+                            onClick={() => openFeedbackModal(app.doctorId, 'rejected')}
+                            disabled={isUpdating}
+                            className="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-red-100 transition-all"
+                          >
+                            Reject
+                          </button>
+                          </>
+                        )}
+                        {app.status === 'screening' && (
+                          <>
                           <button
                             onClick={() => openFeedbackModal(app.doctorId, 'shortlisted')}
                             disabled={isUpdating}
@@ -459,11 +706,37 @@ const ApplicationsTracking = () => {
                           >
                             Reject
                           </button>
-                        </div>
-                      )}
-                      {app.status !== 'applied' && (
-                        <span className="text-slate-300 text-xs font-bold italic">Process Finalized</span>
-                      )}
+                          </>
+                        )}
+                        {app.status === 'shortlisted' && (
+                          <button onClick={() => setScheduleDoctorId(app.doctorId)} disabled={isUpdating} className="bg-purple-100 text-purple-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-purple-200 transition-all">
+                            Schedule Interview
+                          </button>
+                        )}
+                        {app.status === 'interview_scheduled' && (
+                          <button onClick={() => advanceApplication(app.doctorId, 'complete')} disabled={isUpdating} className="bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-indigo-200 transition-all">
+                            Complete Interview
+                          </button>
+                        )}
+                        {app.status === 'interview_completed' && (
+                          <button onClick={() => advanceApplication(app.doctorId, 'offer', { note: globalThis.prompt('Offer note') || '' })} disabled={isUpdating} className="bg-emerald-100 text-emerald-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-emerald-200 transition-all">
+                            Offer
+                          </button>
+                        )}
+                        {app.status === 'offer' && (
+                          <button onClick={() => advanceApplication(app.doctorId, 'hire', { note: 'Candidate hired.' })} disabled={isUpdating} className="bg-green-100 text-green-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-green-200 transition-all flex items-center gap-1">
+                            <CheckCircle size={14} /> Joined
+                          </button>
+                        )}
+                        {['shortlisted', 'interview_scheduled', 'interview_completed', 'offer'].includes(app.status) && (
+                          <button onClick={() => openFeedbackModal(app.doctorId, 'rejected')} disabled={isUpdating} className="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-xs font-black uppercase hover:bg-red-100 transition-all">
+                            Reject
+                          </button>
+                        )}
+                        {['hired', 'joined', 'rejected'].includes(app.status) && (
+                          <span className="text-slate-300 text-xs font-bold italic">Process Finalized</span>
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>

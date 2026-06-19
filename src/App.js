@@ -19,6 +19,7 @@ import JobListings from './pages/JobListings';
 import JobDetails from './pages/JobDetails';
 import PostJob from './pages/PostJob';
 import ApplicationsTracking from './pages/ApplicationsTracking';
+import CandidateProfile from './pages/CandidateProfile';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import Courses from './pages/Courses';
@@ -139,6 +140,11 @@ function App() {
               <Route path="/hospital/jobs/:jobId/applications" element={
                 <ProtectedRoute allowedRoles={['hospital']}>
                   <ApplicationsTracking />
+                </ProtectedRoute>
+              } />
+              <Route path="/hospital/candidates/:candidateId" element={
+                <ProtectedRoute allowedRoles={['hospital']}>
+                  <CandidateProfile />
                 </ProtectedRoute>
               } />
               <Route path="/hospital/course-upload" element={
