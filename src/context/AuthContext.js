@@ -7,9 +7,20 @@ export const AuthContext = createContext();
 
 const safeString = (value) => (typeof value === 'string' ? value : '');
 const safeArray = (value) => (Array.isArray(value) ? value.filter((item) => typeof item === 'string') : []);
-const safeObject = (value) => (
-  value && typeof value === 'object' && !Array.isArray(value) ? value : null
-);
+const safeNumber = (value) => (Number.isFinite(Number(value)) ? Number(value) : 0);
+const sanitizeResumeAnalysis = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+
+  return {
+    candidate_summary: safeString(value.candidate_summary),
+    resume_score: safeNumber(value.resume_score),
+    seniority_level: safeString(value.seniority_level),
+    experience_years: safeNumber(value.experience_years),
+    specialization: safeString(value.specialization),
+    recommended_roles: safeArray(value.recommended_roles),
+    missing_information: safeArray(value.missing_information),
+  };
+};
 
 const normalizeUser = (user) => {
   if (!user || typeof user !== 'object') return null;
@@ -28,9 +39,9 @@ const normalizeUser = (user) => {
     phone: safeString(user.phone),
     bio: safeString(user.bio),
     skills: safeArray(user.skills),
-    resumeAnalysis: safeObject(user.resumeAnalysis),
+    resumeAnalysis: sanitizeResumeAnalysis(user.resumeAnalysis),
     preferredLocations: safeArray(user.preferredLocations),
-    experience: Number.isFinite(Number(user.experience)) ? Number(user.experience) : 0,
+    experience: safeNumber(user.experience),
     licenseNumber: safeString(user.licenseNumber),
     verified: Boolean(user.verified),
   };
