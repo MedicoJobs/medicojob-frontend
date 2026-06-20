@@ -72,30 +72,30 @@ const AdminCourseUpload = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-black text-slate-700 mb-2">Course Title</label>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
+            <label htmlFor="course-title" className="block text-sm font-black text-slate-700 mb-2">Course Title</label>
+            <input id="course-title" type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
           </div>
           
           <div>
-            <label className="block text-sm font-black text-slate-700 mb-2">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} required rows={4} className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
+            <label htmlFor="course-description" className="block text-sm font-black text-slate-700 mb-2">Description</label>
+            <textarea id="course-description" name="description" value={formData.description} onChange={handleChange} required rows={4} className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-black text-slate-700 mb-2">Instructor Name</label>
-              <input type="text" name="instructor" value={formData.instructor} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
+              <label htmlFor="course-instructor" className="block text-sm font-black text-slate-700 mb-2">Instructor Name</label>
+              <input id="course-instructor" type="text" name="instructor" value={formData.instructor} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-black text-slate-700 mb-2">Duration (Minutes)</label>
-              <input type="number" name="durationMinutes" value={formData.durationMinutes} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
+              <label htmlFor="course-duration" className="block text-sm font-black text-slate-700 mb-2">Duration (Minutes)</label>
+              <input id="course-duration" type="number" name="durationMinutes" value={formData.durationMinutes} onChange={handleChange} required className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium transition-all" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-black text-slate-700 mb-2">Video File</label>
+            <label htmlFor="course-video" className="block text-sm font-black text-slate-700 mb-2">Video File</label>
             <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition-colors relative cursor-pointer group">
-              <input type="file" accept="video/*" onChange={handleFileChange} required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              <input id="course-video" type="file" accept="video/*" onChange={handleFileChange} required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               <FileVideo size={32} className="mx-auto text-slate-400 mb-2 group-hover:text-emerald-500 transition-colors" />
               <p className="text-sm font-bold text-slate-600">
                 {videoFile ? videoFile.name : 'Click or drag video file to upload'}

@@ -22,6 +22,12 @@ const STATUS_STYLES = {
   rejected:    'bg-red-50 text-red-600 border-red-100',
 };
 
+const getResumeScoreTone = (resumeScore) => {
+  if (resumeScore >= 75) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+  if (resumeScore >= 50) return 'bg-amber-50 text-amber-700 border-amber-100';
+  return 'bg-red-50 text-red-700 border-red-100';
+};
+
 // Modal for entering rejection reason or next steps
 function FeedbackModal({ type, onConfirm, onCancel }) {
   const [text, setText] = useState('');
@@ -600,7 +606,7 @@ const ApplicationsTracking = () => {
               const reputation = applicantReputations[app.doctorId] || { averageRating: 0, count: 0 };
               const isUpdating = updating?.startsWith(app.doctorId);
               const resumeScore = app.resumeScore ?? app.resumeAnalysis?.resume_score;
-              const scoreTone = resumeScore >= 75 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : resumeScore >= 50 ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-red-50 text-red-700 border-red-100';
+              const scoreTone = getResumeScoreTone(resumeScore);
 
               return (
                 <tr key={app.doctorId} className="hover:bg-slate-50/40 transition-colors">

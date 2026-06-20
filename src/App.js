@@ -61,10 +61,6 @@ function SocketNotifications({ setNotification }) {
       return undefined;
     }
 
-    // if (!socket.connected) {
-    //   socket.connect();
-    // }
-
     socket.on('newJob', (job) => {
       setNotification({ title: 'New Job Posted!', message: `${job.title} in ${job.location}`, type: 'success' });
     });
