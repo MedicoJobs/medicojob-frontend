@@ -1,0 +1,257 @@
+﻿name: CI/CD - medicojob-frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: ap-south-1
+  SERVICE_NAME: medicojob-frontend
+  SONAR_PROJECT_KEY: medicojob-frontend
+  RUNTIME: node
+  INFRA_REPOSITORY: ${{ vars.INFRA_REPOSITORY || 'MedicoJobs/terraform-eks' }}
+  INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
+  KUSTOMIZE_FILE: k8s/overlays/prod/kustomization.yaml
+
+jobs:
+  quality:
+    name: Sonar quality gate and Snyk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout service
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        if: env.RUNTIME == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install Node dependencies
+        if: env.RUNTIME == 'node'
+        run: npm ci
+
+      - name: Run Node tests when configured
+        if: env.RUNTIME == 'node'
+        shell: bash
+        run: |
+          test_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.test) || '')")"
+          if [ -z "$test_script" ] || echo "$test_script" | grep -qi 'no test specified'; then
+            echo "No real npm test script configured for $SERVICE_NAME."
+          else
+            CI=true npm test
+          fi
+
+      - name: Run Node build when configured
+        if: env.RUNTIME == 'node'
+        shell: bash
+        run: |
+          build_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.build) || '')")"
+          if [ -z "$build_script" ]; then
+            echo "No npm build script configured for $SERVICE_NAME."
+          else
+            npm run build
+          fi
+
+      - name: Setup Python
+        if: env.RUNTIME == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Python dependencies
+        if: env.RUNTIME == 'python'
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest
+
+      - name: Run Python tests
+        if: env.RUNTIME == 'python'
+        run: pytest
+
+      - name: SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v7.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >-
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.projectName=${{ env.SERVICE_NAME }}
+
+      - name: SonarQube quality gate
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 10
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Snyk dependency scan
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "SNYK_TOKEN is required."
+            exit 1
+          fi
+
+          if [ "$RUNTIME" = "node" ]; then
+            snyk test --file=package-lock.json --severity-threshold=high
+          else
+            snyk test --file=requirements.txt --package-manager=pip --severity-threshold=high
+          fi
+
+  build_scan_push:
+    name: Build, scan, push to ECR, update terraform-eks
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout service
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Prepare image metadata
+        id: image
+        shell: bash
+        run: |
+          image_tag="$GITHUB_SHA"
+          image_repo="${{ steps.ecr.outputs.registry }}/$SERVICE_NAME"
+          echo "tag=$image_tag" >> "$GITHUB_OUTPUT"
+          echo "repo=$image_repo" >> "$GITHUB_OUTPUT"
+          echo "uri=$image_repo:$image_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          push: false
+          tags: ${{ steps.image.outputs.uri }}
+          build-args: |
+            REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || 'https://medicojobs.online' }}
+
+      - name: Scan built image with Trivy
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ steps.image.outputs.uri }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+
+      - name: Push image to ECR
+        run: docker push "${{ steps.image.outputs.uri }}"
+
+      - name: Checkout terraform-eks repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.INFRA_REPOSITORY }}
+          ref: ${{ env.INFRA_BRANCH }}
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          path: infra
+
+      - name: Install yq
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update terraform-eks kustomize image tag
+        working-directory: infra
+        env:
+          IMAGE_REPO: ${{ steps.image.outputs.repo }}
+          IMAGE_TAG: ${{ steps.image.outputs.tag }}
+        run: |
+          if [ ! -f "$KUSTOMIZE_FILE" ]; then
+            echo "$KUSTOMIZE_FILE was not found in $INFRA_REPOSITORY."
+            exit 1
+          fi
+
+          yq -i '(.images[] | select(.newName == strenv(IMAGE_REPO))).newTag = strenv(IMAGE_TAG)' "$KUSTOMIZE_FILE"
+
+          if ! git diff --quiet -- "$KUSTOMIZE_FILE"; then
+            git diff -- "$KUSTOMIZE_FILE"
+          else
+            echo "No kustomize change was made. Check that IMAGE_REPO exists in the images list: $IMAGE_REPO"
+            exit 1
+          fi
+
+      - name: Commit terraform-eks image tag update
+        working-directory: infra
+        run: |
+          git config user.name "medicojobs-ci"
+          git config user.email "medicojobs-ci@users.noreply.github.com"
+          git add "$KUSTOMIZE_FILE"
+          git commit -m "deploy($SERVICE_NAME): $GITHUB_SHA"
+          git push origin "$INFRA_BRANCH"
+  notify_failure:
+    name: Email failure notification
+    runs-on: ubuntu-latest
+    needs:
+      - quality
+      - build_scan_push
+    if: always() && (needs.quality.result == 'failure' || needs.build_scan_push.result == 'failure')
+
+    steps:
+      - name: Checkout service
+        uses: actions/checkout@v4
+
+      - name: Send failure email
+        uses: ./.github/actions/notification-action
+        with:
+          status: failed
+          pipeline_name: ${{ github.workflow }}
+          repository_name: ${{ github.repository }}
+          author: ${{ github.actor }}
+          smtp_username: ${{ secrets.SMTP_USERNAME }}
+          smtp_password: ${{ secrets.SMTP_PASSWORD }}
+          smtp_server: ${{ secrets.SMTP_SERVER }}
+          smtp_port: ${{ secrets.SMTP_PORT || '587' }}
+          mail_from: ${{ secrets.MAIL_FROM }}
+          mail_to: ${{ secrets.MAIL_TO }}
+          workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          report_url: ${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ env.SONAR_PROJECT_KEY }}
+          failure_reason: |
+            CI/CD failed for ${{ env.SERVICE_NAME }}.
+
+            Quality job result: ${{ needs.quality.result }}
+            Build, scan, push, deploy-tag job result: ${{ needs.build_scan_push.result }}
+
+            Check the workflow run for the exact failed step. Docker build and ECR push only run after Sonar Quality Gate and Snyk pass.
+
