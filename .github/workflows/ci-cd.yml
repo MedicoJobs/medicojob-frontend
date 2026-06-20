@@ -1,4 +1,4 @@
-﻿name: CI/CD - medicojob-frontend
+name: CI/CD - medicojob-frontend
 
 on:
   push:
@@ -19,8 +19,7 @@ env:
   AWS_REGION: ap-south-1
   SERVICE_NAME: medicojob-frontend
   SONAR_PROJECT_KEY: medicojob-frontend
-  RUNTIME: node
-  HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/medicojobs-helm' }}
+  HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/Helm' }}
   INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
   HELM_VALUES_FILE: apps/frontend/values.yaml
 
@@ -36,7 +35,6 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        if: env.RUNTIME == 'node'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -44,11 +42,9 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install Node dependencies
-        if: env.RUNTIME == 'node'
         run: npm ci
 
       - name: Run Node tests when configured
-        if: env.RUNTIME == 'node'
         shell: bash
         run: |
           test_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.test) || '')")"
@@ -59,7 +55,6 @@ jobs:
           fi
 
       - name: Run Node build when configured
-        if: env.RUNTIME == 'node'
         shell: bash
         run: |
           build_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.build) || '')")"
@@ -68,24 +63,6 @@ jobs:
           else
             npm run build
           fi
-
-      - name: Setup Python
-        if: env.RUNTIME == 'python'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: pip
-
-      - name: Install Python dependencies
-        if: env.RUNTIME == 'python'
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest
-
-      - name: Run Python tests
-        if: env.RUNTIME == 'python'
-        run: pytest
 
       - name: SonarCloud scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
@@ -97,13 +74,7 @@ jobs:
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.projectName=${{ env.SERVICE_NAME }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-
-      - name: SonarCloud quality gate
-        uses: SonarSource/sonarqube-quality-gate-action@master
-        timeout-minutes: 10
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+            -Dsonar.qualitygate.wait=true
 
       - name: Setup Snyk
         uses: snyk/actions/setup@master
@@ -118,11 +89,7 @@ jobs:
             exit 1
           fi
 
-          if [ "$RUNTIME" = "node" ]; then
-            snyk test --file=package-lock.json --severity-threshold=high
-          else
-            snyk test --file=requirements.txt --package-manager=pip --severity-threshold=high
-          fi
+          snyk test --file=package-lock.json --severity-threshold=high
 
   build_scan_push:
     name: Build, scan, push to ECR, update Helm values
@@ -255,7 +222,4 @@ jobs:
             Build, scan, push, deploy-tag job result: ${{ needs.build_scan_push.result }}
 
             Check the workflow run for the exact failed step. Docker build and ECR push only run after SonarCloud Quality Gate and Snyk pass.
-
-
-
 
