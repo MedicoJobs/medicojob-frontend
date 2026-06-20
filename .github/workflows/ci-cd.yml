@@ -25,7 +25,7 @@ env:
 
 jobs:
   quality:
-    name: SonarCloud quality gate and Snyk
+    name: SonarCloud scan, quality gate, and Snyk
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +64,7 @@ jobs:
             npm run build
           fi
 
-      - name: SonarCloud scan
+      - name: SonarCloud scan and quality gate
         uses: SonarSource/sonarqube-scan-action@v7.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -222,4 +222,3 @@ jobs:
             Build, scan, push, deploy-tag job result: ${{ needs.build_scan_push.result }}
 
             Check the workflow run for the exact failed step. Docker build and ECR push only run after SonarCloud Quality Gate and Snyk pass.
-
