@@ -8,6 +8,8 @@ import {
   Save, Edit3, X, CheckCircle, ShieldCheck, Clock, Zap
 } from 'lucide-react';
 
+const USER_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+
 const Profile = () => {
   const { user, login } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -35,8 +37,14 @@ const Profile = () => {
   }, [user.id]);
 
   const fetchAvailability = async () => {
+    const userId = String(user?.id || '');
+    if (!USER_ID_PATTERN.test(userId)) {
+      console.error('Invalid user id for availability lookup.');
+      return;
+    }
+
     try {
-      const res = await axios.get(`${API_BASE_URL}/availability/${user.id}`);
+      const res = await axios.get(`${API_BASE_URL}/availability/${encodeURIComponent(userId)}`);
       setAvailability(res.data);
     } catch (err) {
       console.log('No availability data yet', err);
