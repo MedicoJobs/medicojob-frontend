@@ -1,4 +1,4 @@
-name: CI/CD - medicojob-frontend
+﻿name: CI/CD - medicojob-frontend
 
 on:
   push:
