@@ -63,15 +63,15 @@ const CoursePlayer = () => {
       </button>
 
       <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-8">
-        {/* Video Player */}
         <div className="w-full bg-black aspect-video relative">
-        {console.log(course.videoUrl)}
           <video 
             src={course.videoUrl} 
             controls 
             controlsList="nodownload"
             className="w-full h-full object-contain"
-          />
+          >
+            <track kind="captions" src="/captions-empty.vtt" srcLang="en" label="English captions" />
+          </video>
         </div>
 
         <div className="p-8">

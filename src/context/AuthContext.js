@@ -55,24 +55,17 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user');
       
       if (token) {
-        if (savedUser) {
-          setUser(normalizeUser(JSON.parse(savedUser)));
-        }
-        
         try {
           const res = await axios.get(`${API_BASE_URL}/auth/profile`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const normalized = normalizeUser(res.data);
           setUser(normalized);
-          localStorage.setItem('user', JSON.stringify(normalized));
         } catch (error) {
           console.error('Failed to refresh authenticated user profile.', error);
           localStorage.removeItem('token');
-          localStorage.removeItem('user');
           setUser(null);
         }
       }
@@ -84,19 +77,16 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback((userData, token) => {
     localStorage.setItem('token', token);
     const normalized = normalizeUser(userData);
-    localStorage.setItem('user', JSON.stringify(normalized));
     setUser(normalized);
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     setUser(null);
   }, []);
 
   const updateUser = useCallback((userData) => {
     const normalized = normalizeUser(userData);
-    localStorage.setItem('user', JSON.stringify(normalized));
     setUser(normalized);
   }, []);
 
