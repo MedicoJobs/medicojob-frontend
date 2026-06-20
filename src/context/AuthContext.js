@@ -5,21 +5,33 @@ import { API_BASE_URL } from '../utils/api';
 
 export const AuthContext = createContext();
 
+const safeString = (value) => (typeof value === 'string' ? value : '');
+const safeArray = (value) => (Array.isArray(value) ? value.filter((item) => typeof item === 'string') : []);
+const safeObject = (value) => (
+  value && typeof value === 'object' && !Array.isArray(value) ? value : null
+);
+
 const normalizeUser = (user) => {
-  if (!user) return null;
+  if (!user || typeof user !== 'object') return null;
+
+  const id = safeString(user.id || user._id);
 
   return {
-    ...user,
-    id: user.id || user._id,
-    _id: user._id || user.id,
-    specialization: user.specialization || '',
-    phone: user.phone || '',
-    bio: user.bio || '',
-    skills: user.skills || [],
-    resumeAnalysis: user.resumeAnalysis || null,
-    preferredLocations: user.preferredLocations || [],
-    experience: user.experience || 0,
-    licenseNumber: user.licenseNumber || '',
+    id,
+    _id: id,
+    name: safeString(user.name),
+    email: safeString(user.email),
+    role: safeString(user.role),
+    profileImage: safeString(user.profileImage),
+    resumeUrl: safeString(user.resumeUrl),
+    specialization: safeString(user.specialization),
+    phone: safeString(user.phone),
+    bio: safeString(user.bio),
+    skills: safeArray(user.skills),
+    resumeAnalysis: safeObject(user.resumeAnalysis),
+    preferredLocations: safeArray(user.preferredLocations),
+    experience: Number.isFinite(Number(user.experience)) ? Number(user.experience) : 0,
+    licenseNumber: safeString(user.licenseNumber),
     verified: Boolean(user.verified),
   };
 };

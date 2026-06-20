@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/api';
-import { Activity, User, Mail, Lock, Stethoscope, Building, Eye, EyeOff, CheckCircle, ShieldCheck } from 'lucide-react';
+import { User, Mail, Lock, Stethoscope, Eye, EyeOff, CheckCircle, ShieldCheck } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '', email: '', password: '', role: 'applicant', specialization: '', licenseNumber: ''
   });
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -20,10 +20,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setFormError('');
     
     if (formData.password !== confirmPassword) {
-      setError('Passwords do not match');
+      setFormError('Passwords do not match');
       return;
     }
 
@@ -32,13 +32,14 @@ const Register = () => {
       await axios.post(`${API_BASE_URL}/auth/register`, formData);
       navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setFormError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const isHospital = formData.role === 'hospital';
+  const isApplicant = formData.role === 'applicant';
 
   return (
     <div className="min-h-screen flex bg-white font-sans text-slate-900">
@@ -84,13 +85,19 @@ const Register = () => {
             <p className="text-slate-500 font-bold">Choose your path and create your account.</p>
           </div>
 
+          {formError && (
+            <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">
+              {formError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Role Switcher */}
             <div className="flex p-1.5 bg-slate-100 rounded-[1.5rem] mb-8">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'applicant' })}
-                className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${!isHospital ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${isApplicant ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Healthcare Professional
               </button>

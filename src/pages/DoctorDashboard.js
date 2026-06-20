@@ -23,6 +23,24 @@ const STATUS_CONFIG = {
   rejected:    { label: 'Not Selected', color: 'text-red-600 bg-red-50 border-red-100' },
 };
 
+const getAnswerOptionClass = ({ isCorrect, isWrong, selected }) => {
+  if (isCorrect) return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  if (isWrong) return 'bg-red-50 text-red-700 border-red-200';
+  if (selected) return 'bg-blue-50 text-blue-700 border-blue-200';
+  return 'bg-slate-50 text-slate-600 border-slate-100 hover:border-blue-200';
+};
+
+const getApplicationNoteLabel = (status) => {
+  if (status === 'rejected') return 'Rejection Reason';
+  if (status === 'offer') return 'Offer Details';
+  if (['hired', 'joined'].includes(status)) return 'Joining Update';
+  return 'Next Steps to Follow';
+};
+
+const getApplicationNoteTone = (status) => (
+  status === 'rejected' ? 'text-red-500' : 'text-amber-600'
+);
+
 const DoctorDashboard = () => {
   const { user } = useContext(AuthContext);
   const [recommendedJobs, setRecommendedJobs] = useState([]);
@@ -116,6 +134,10 @@ const DoctorDashboard = () => {
   const submitPracticeExam = () => {
     if (!practiceExam) return;
     setExamSubmitted(true);
+  };
+
+  const handleExamAnswerChange = (questionId, option) => {
+    setExamAnswers((prev) => ({ ...prev, [questionId]: option }));
   };
 
   const examScore = practiceExam?.questions.reduce((score, item) => {
@@ -225,25 +247,18 @@ const DoctorDashboard = () => {
                       const selected = examAnswers[item.id] === option;
                       const isCorrect = examSubmitted && item.correct_answer === option;
                       const isWrong = examSubmitted && selected && item.correct_answer !== option;
+                      const optionClass = getAnswerOptionClass({ isCorrect, isWrong, selected });
                       return (
                         <label
                           key={option}
-                          className={`block text-sm font-bold rounded-xl px-4 py-2 border cursor-pointer transition-all ${
-                            isCorrect
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : isWrong
-                                ? 'bg-red-50 text-red-700 border-red-200'
-                                : selected
-                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                  : 'bg-slate-50 text-slate-600 border-slate-100 hover:border-blue-200'
-                          }`}
+                          className={`block text-sm font-bold rounded-xl px-4 py-2 border cursor-pointer transition-all ${optionClass}`}
                         >
                           <input
                             type="radio"
                             name={`question-${item.id}`}
                             value={option}
                             checked={selected}
-                            onChange={() => setExamAnswers((prev) => ({ ...prev, [item.id]: option }))}
+                            onChange={() => handleExamAnswerChange(item.id, option)}
                             disabled={examSubmitted}
                             className="mr-2"
                           />
@@ -305,37 +320,11 @@ const DoctorDashboard = () => {
               See All <ArrowRight size={18} />
             </Link>
           </div>
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1,2,3].map(n => <div key={n} className="bg-white h-72 rounded-[2.5rem] animate-pulse border border-slate-100 shadow-sm"></div>)}
-            </div>
-          ) : recommendationError ? (
-            <div className="py-20 text-center bg-white rounded-[2.5rem] border border-amber-100">
-              <AlertCircle size={40} className="text-amber-400 mx-auto mb-4" />
-              <p className="text-slate-600 font-black text-xl">{recommendationError}</p>
-              <Link to="/jobs" className="inline-flex items-center gap-2 mt-6 text-emerald-600 font-black text-sm hover:gap-3 transition-all">
-                Browse all jobs <ArrowRight size={18} />
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {recommendedJobs.map(job => (
-                <div key={job._id} className="relative">
-                  {job.matchScore >= 90 && (
-                    <div className="absolute -top-3 -right-3 z-10 bg-amber-400 text-slate-900 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                      Top Match
-                    </div>
-                  )}
-                  <JobCard job={job} />
-                </div>
-              ))}
-              {recommendedJobs.length === 0 && (
-                <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-dashed border-slate-200">
-                  <p className="text-slate-400 font-black text-xl italic">No matches found. Update your profile for better results.</p>
-                </div>
-              )}
-            </div>
-          )}
+          <RecommendedJobsContent
+            loading={loading}
+            recommendationError={recommendationError}
+            recommendedJobs={recommendedJobs}
+          />
         </section>
       )}
 
@@ -410,8 +399,8 @@ const DoctorDashboard = () => {
                               {app.applicationStatus === 'rejected' ? <AlertCircle size={16} /> : <Zap size={16} />}
                            </div>
                            <div>
-                             <h4 className={`text-[10px] font-black uppercase tracking-widest mb-1 ${app.applicationStatus === 'rejected' ? 'text-red-500' : 'text-amber-600'}`}>
-                               {app.applicationStatus === 'rejected' ? 'Rejection Reason' : app.applicationStatus === 'offer' ? 'Offer Details' : ['hired', 'joined'].includes(app.applicationStatus) ? 'Joining Update' : 'Next Steps to Follow'}
+                             <h4 className={`text-[10px] font-black uppercase tracking-widest mb-1 ${getApplicationNoteTone(app.applicationStatus)}`}>
+                               {getApplicationNoteLabel(app.applicationStatus)}
                              </h4>
                              <p className="text-sm font-bold text-slate-700 italic">
                                "{app.applicationStatus === 'rejected' ? (app.rejectionReason || 'No reason provided.') : (app.nextStep || 'Next steps will be updated soon.')}"
@@ -450,6 +439,54 @@ function StatCard({ icon, label, value, color, bg }) {
     </div>
   );
 }
+
+function RecommendedJobsContent({ loading, recommendationError, recommendedJobs }) {
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[1,2,3].map(n => <div key={n} className="bg-white h-72 rounded-[2.5rem] animate-pulse border border-slate-100 shadow-sm"></div>)}
+      </div>
+    );
+  }
+
+  if (recommendationError) {
+    return (
+      <div className="py-20 text-center bg-white rounded-[2.5rem] border border-amber-100">
+        <AlertCircle size={40} className="text-amber-400 mx-auto mb-4" />
+        <p className="text-slate-600 font-black text-xl">{recommendationError}</p>
+        <Link to="/jobs" className="inline-flex items-center gap-2 mt-6 text-emerald-600 font-black text-sm hover:gap-3 transition-all">
+          Browse all jobs <ArrowRight size={18} />
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {recommendedJobs.map(job => (
+        <div key={job._id} className="relative">
+          {job.matchScore >= 90 && (
+            <div className="absolute -top-3 -right-3 z-10 bg-amber-400 text-slate-900 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+              Top Match
+            </div>
+          )}
+          <JobCard job={job} />
+        </div>
+      ))}
+      {recommendedJobs.length === 0 && (
+        <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-dashed border-slate-200">
+          <p className="text-slate-400 font-black text-xl italic">No matches found. Update your profile for better results.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+RecommendedJobsContent.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  recommendationError: PropTypes.string.isRequired,
+  recommendedJobs: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 StatCard.propTypes = {
   icon: PropTypes.node.isRequired,
