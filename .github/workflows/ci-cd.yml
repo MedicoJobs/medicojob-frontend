@@ -16,7 +16,7 @@ concurrency:
 env:
   AWS_REGION: ap-south-1
   SERVICE_NAME: medicojob-frontend
-  SONAR_PROJECT_KEY: medicojob-frontend
+  SONAR_PROJECT_KEY: MedicoJobs_medicojob-frontend
   HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/Helm' }}
   INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
   HELM_VALUES_FILE: apps/frontend/values.yaml
