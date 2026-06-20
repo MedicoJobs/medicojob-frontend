@@ -20,13 +20,13 @@ env:
   SERVICE_NAME: medicojob-frontend
   SONAR_PROJECT_KEY: medicojob-frontend
   RUNTIME: node
-  INFRA_REPOSITORY: ${{ vars.INFRA_REPOSITORY || 'MedicoJobs/terraform-eks' }}
+  HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/medicojobs-helm' }}
   INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
-  KUSTOMIZE_FILE: k8s/overlays/prod/kustomization.yaml
+  HELM_VALUES_FILE: apps/frontend/values.yaml
 
 jobs:
   quality:
-    name: Sonar quality gate and Snyk
+    name: SonarCloud quality gate and Snyk
     runs-on: ubuntu-latest
 
     steps:
@@ -87,22 +87,23 @@ jobs:
         if: env.RUNTIME == 'python'
         run: pytest
 
-      - name: SonarQube scan
+      - name: SonarCloud scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >-
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.projectName=${{ env.SERVICE_NAME }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
 
-      - name: SonarQube quality gate
+      - name: SonarCloud quality gate
         uses: SonarSource/sonarqube-quality-gate-action@master
         timeout-minutes: 10
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Setup Snyk
         uses: snyk/actions/setup@master
@@ -124,7 +125,7 @@ jobs:
           fi
 
   build_scan_push:
-    name: Build, scan, push to ECR, update terraform-eks
+    name: Build, scan, push to ECR, update Helm values
     runs-on: ubuntu-latest
     needs: quality
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -179,10 +180,10 @@ jobs:
       - name: Push image to ECR
         run: docker push "${{ steps.image.outputs.uri }}"
 
-      - name: Checkout terraform-eks repository
+      - name: Checkout Helm repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.INFRA_REPOSITORY }}
+          repository: ${{ env.HELM_REPOSITORY }}
           ref: ${{ env.INFRA_BRANCH }}
           token: ${{ secrets.INFRA_REPO_TOKEN }}
           path: infra
@@ -192,23 +193,23 @@ jobs:
           sudo wget -q https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64 -O /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
 
-      - name: Update terraform-eks kustomize image tag
+      - name: Update Helm image tag
         working-directory: infra
         env:
           IMAGE_REPO: ${{ steps.image.outputs.repo }}
           IMAGE_TAG: ${{ steps.image.outputs.tag }}
         run: |
-          if [ ! -f "$KUSTOMIZE_FILE" ]; then
-            echo "$KUSTOMIZE_FILE was not found in $INFRA_REPOSITORY."
+          if [ ! -f "$HELM_VALUES_FILE" ]; then
+            echo "$HELM_VALUES_FILE was not found in $HELM_REPOSITORY."
             exit 1
           fi
 
-          yq -i '(.images[] | select(.newName == strenv(IMAGE_REPO))).newTag = strenv(IMAGE_TAG)' "$KUSTOMIZE_FILE"
+          yq -i '.image.repository = strenv(IMAGE_REPO) | .image.tag = strenv(IMAGE_TAG)' "$HELM_VALUES_FILE"
 
-          if ! git diff --quiet -- "$KUSTOMIZE_FILE"; then
-            git diff -- "$KUSTOMIZE_FILE"
+          if ! git diff --quiet -- "$HELM_VALUES_FILE"; then
+            git diff -- "$HELM_VALUES_FILE"
           else
-            echo "No kustomize change was made. Check that IMAGE_REPO exists in the images list: $IMAGE_REPO"
+            echo "No Helm values change was made for $IMAGE_REPO:$IMAGE_TAG"
             exit 1
           fi
 
@@ -217,7 +218,7 @@ jobs:
         run: |
           git config user.name "medicojobs-ci"
           git config user.email "medicojobs-ci@users.noreply.github.com"
-          git add "$KUSTOMIZE_FILE"
+          git add "$HELM_VALUES_FILE"
           git commit -m "deploy($SERVICE_NAME): $GITHUB_SHA"
           git push origin "$INFRA_BRANCH"
   notify_failure:
@@ -246,12 +247,15 @@ jobs:
           mail_from: ${{ secrets.MAIL_FROM }}
           mail_to: ${{ secrets.MAIL_TO }}
           workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          report_url: ${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ env.SONAR_PROJECT_KEY }}
+          report_url: https://sonarcloud.io/dashboard?id=${{ env.SONAR_PROJECT_KEY }}
           failure_reason: |
             CI/CD failed for ${{ env.SERVICE_NAME }}.
 
             Quality job result: ${{ needs.quality.result }}
             Build, scan, push, deploy-tag job result: ${{ needs.build_scan_push.result }}
 
-            Check the workflow run for the exact failed step. Docker build and ECR push only run after Sonar Quality Gate and Snyk pass.
+            Check the workflow run for the exact failed step. Docker build and ECR push only run after SonarCloud Quality Gate and Snyk pass.
+
+
+
 
