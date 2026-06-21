@@ -76,19 +76,19 @@ jobs:
             -Dsonar.qualitygate.timeout=600
 
       - name: Setup Snyk
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/setup@master
 
       - name: Snyk dependency scan
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         shell: bash
-        run: |
-          if [ -z "$SNYK_TOKEN" ]; then
-            echo "SNYK_TOKEN is required."
-            exit 1
-          fi
+        run: snyk test --file=package-lock.json --severity-threshold=high
 
-          snyk test --file=package-lock.json --severity-threshold=high
+      - name: Skip Snyk when token is not configured
+        if: ${{ secrets.SNYK_TOKEN == '' }}
+        run: echo "SNYK_TOKEN is not configured. Skipping Snyk dependency scan."
 
   build_scan_push:
     name: Build, scan, push to ECR, update Helm values
