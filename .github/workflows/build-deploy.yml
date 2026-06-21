@@ -1,11 +1,9 @@
-name: Build and Deploy Image - medicojob-frontend
+﻿name: Build and Deploy Image - medicojob-frontend
 
 on:
   push:
     branches:
       - main
-      - master
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,6 +19,7 @@ env:
   HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/Helm' }}
   INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
   HELM_VALUES_FILE: apps/frontend/values.yaml
+  HELM_REPO_TOKEN: ${{ secrets.GITOPS_TOKEN }}
 
 jobs:
   build_scan_push:
@@ -99,12 +98,19 @@ jobs:
       - name: Push image to ECR
         run: docker push "${{ steps.image.outputs.uri }}"
 
+      - name: Validate Helm repository token
+        shell: bash
+        run: |
+          if [ -z "$HELM_REPO_TOKEN" ]; then
+            echo "GITOPS_TOKEN is required. Create a GitHub token with write access to $HELM_REPOSITORY and save it as a GitHub Actions secret named GITOPS_TOKEN."
+            exit 1
+          fi
       - name: Checkout Helm repository
         uses: actions/checkout@v4
         with:
           repository: ${{ env.HELM_REPOSITORY }}
           ref: ${{ env.INFRA_BRANCH }}
-          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          token: ${{ env.HELM_REPO_TOKEN }}
           path: infra
 
       - name: Install yq
@@ -168,5 +174,7 @@ jobs:
           report_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           failure_reason: |
             Docker build, Trivy scan, ECR push, or Helm image update failed for ${{ env.SERVICE_NAME }}.
+
+
 
 
