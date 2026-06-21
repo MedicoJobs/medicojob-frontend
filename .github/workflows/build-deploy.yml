@@ -112,6 +112,7 @@ jobs:
           repository: ${{ env.HELM_REPOSITORY }}
           ref: ${{ env.INFRA_BRANCH }}
           token: ${{ env.HELM_REPO_TOKEN }}
+          persist-credentials: false
           path: infra
 
       - name: Install yq
@@ -142,11 +143,12 @@ jobs:
       - name: Commit Helm image tag update
         working-directory: infra
         run: |
-          git config user.name "medicojobs-ci"
-          git config user.email "medicojobs-ci@users.noreply.github.com"
+          git config user.name "PaviTechDeveloper"
+          git config user.email "pavithrasampath8925@gmail.com"
           git add "$HELM_VALUES_FILE"
           git commit -m "deploy($SERVICE_NAME): $GITHUB_SHA"
-          git push origin "$INFRA_BRANCH"
+          git remote set-url origin "https://x-access-token:${HELM_REPO_TOKEN}@github.com/${HELM_REPOSITORY}.git"
+          git push origin "HEAD:$INFRA_BRANCH"
 
   notify_failure:
     name: Email build/deploy failure
@@ -168,14 +170,11 @@ jobs:
           smtp_username: ${{ secrets.SMTP_USERNAME }}
           smtp_password: ${{ secrets.SMTP_PASSWORD }}
           smtp_server: ${{ secrets.SMTP_SERVER }}
-          smtp_port: ${{ secrets.SMTP_PORT || '587' }}
+          smtp_port: '587'
           mail_from: ${{ secrets.MAIL_FROM }}
           mail_to: ${{ secrets.MAIL_TO }}
           workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           report_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           failure_reason: |
             Docker build, Trivy scan, ECR push, or Helm image update failed for ${{ env.SERVICE_NAME }}.
-
-
-
 
