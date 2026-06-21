@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -168,4 +166,5 @@ jobs:
           report_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           failure_reason: |
             Docker build, Trivy scan, ECR push, or Helm image update failed for ${{ env.SERVICE_NAME }}.
+
 
