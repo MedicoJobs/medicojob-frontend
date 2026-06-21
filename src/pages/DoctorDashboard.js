@@ -69,12 +69,12 @@ const DoctorDashboard = () => {
     setRecommendationError('');
     try {
       const res = await axios.get(`${API_BASE_URL}/match/jobs/${user.id}`);
-      setRecommendedJobs(res.data.slice(0, 6));
+      setRecommendedJobs(Array.isArray(res.data) ? res.data.slice(0, 6) : []);
     } catch (err) {
       console.error('Matching service error', err);
       try {
         const fallback = await axios.get(`${API_BASE_URL}/jobs?status=open`);
-        setRecommendedJobs(fallback.data.slice(0, 6));
+        setRecommendedJobs(Array.isArray(fallback.data) ? fallback.data.slice(0, 6) : []);
       } catch (fallbackErr) {
         console.error('Fallback jobs fetch error', fallbackErr);
         setRecommendedJobs([]);
@@ -92,7 +92,7 @@ const DoctorDashboard = () => {
       const res = await axios.get(`${API_BASE_URL}/jobs/my-applications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMyApplications(res.data);
+      setMyApplications(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
       setMyApplications([]);
