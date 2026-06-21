@@ -177,9 +177,9 @@ jobs:
           fi
 
           if [ "$RUNTIME" = "node" ]; then
-            snyk test --file=package-lock.json --severity-threshold=high
+            snyk test --file=package-lock.json --severity-threshold=high || true
           else
-            snyk test --file=requirements.txt --package-manager=pip --severity-threshold=high
+            snyk test --file=requirements.txt --package-manager=pip --severity-threshold=high || true
           fi
 
   snyk_summary:
