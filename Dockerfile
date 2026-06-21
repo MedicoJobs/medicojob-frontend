@@ -12,10 +12,11 @@ ARG REACT_APP_API_URL
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN npm run build
 
-RUN chown -R node:node /usr/src/app
+FROM nginx:1.27-alpine
 
-USER node
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
-EXPOSE 3000
+EXPOSE 80
 
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
