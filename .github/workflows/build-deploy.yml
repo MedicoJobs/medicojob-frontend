@@ -1,14 +1,11 @@
-﻿name: Build and Deploy Image - medicojob-frontend
+name: Build and Deploy Image - medicojob-frontend
 
 on:
   push:
     branches:
       - main
-<<<<<<< HEAD
-=======
       - master
   workflow_dispatch:
->>>>>>> origin/main
 
 permissions:
   contents: read
@@ -164,11 +161,7 @@ jobs:
           smtp_username: ${{ secrets.SMTP_USERNAME }}
           smtp_password: ${{ secrets.SMTP_PASSWORD }}
           smtp_server: ${{ secrets.SMTP_SERVER }}
-<<<<<<< HEAD
-          smtp_port: '587'
-=======
           smtp_port: ${{ secrets.SMTP_PORT || '587' }}
->>>>>>> origin/main
           mail_from: ${{ secrets.MAIL_FROM }}
           mail_to: ${{ secrets.MAIL_TO }}
           workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -176,7 +169,4 @@ jobs:
           failure_reason: |
             Docker build, Trivy scan, ECR push, or Helm image update failed for ${{ env.SERVICE_NAME }}.
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/main

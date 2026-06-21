@@ -74,11 +74,7 @@ const DoctorDashboard = () => {
       console.error('Matching service error', err);
       try {
         const fallback = await axios.get(`${API_BASE_URL}/jobs?status=open`);
-<<<<<<< HEAD
         setRecommendedJobs(Array.isArray(fallback.data) ? fallback.data.slice(0, 6) : []);
-=======
-        setRecommendedJobs(fallback.data.slice(0, 6));
->>>>>>> origin/main
       } catch (fallbackErr) {
         console.error('Fallback jobs fetch error', fallbackErr);
         setRecommendedJobs([]);
