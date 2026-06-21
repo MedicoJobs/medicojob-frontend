@@ -1,13 +1,15 @@
-﻿name: CI/CD - medicojob-frontend
+﻿name: Build and Deploy Image - medicojob-frontend
 
 on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,88 +18,18 @@ concurrency:
 env:
   AWS_REGION: ap-south-1
   SERVICE_NAME: medicojob-frontend
-  SONAR_PROJECT_KEY: MedicoJobs_medicojob-frontend
   HELM_REPOSITORY: ${{ vars.HELM_REPOSITORY || 'MedicoJobs/Helm' }}
   INFRA_BRANCH: ${{ vars.INFRA_BRANCH || 'main' }}
   HELM_VALUES_FILE: apps/frontend/values.yaml
 
 jobs:
-  quality:
-    name: SonarCloud quality gate and Snyk
-    runs-on: ubuntu-latest
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-    steps:
-      - name: Checkout service
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Run Node tests when configured
-        shell: bash
-        run: |
-          test_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.test) || '')")"
-          if [ -z "$test_script" ] || echo "$test_script" | grep -qi 'no test specified'; then
-            echo "No real npm test script configured for $SERVICE_NAME."
-          else
-            CI=true npm test
-          fi
-
-      - name: Run Node build when configured
-        shell: bash
-        run: |
-          build_script="$(node -e "const p=require('./package.json'); console.log((p.scripts && p.scripts.build) || '')")"
-          if [ -z "$build_script" ]; then
-            echo "No npm build script configured for $SERVICE_NAME."
-          else
-            npm run build
-          fi
-
-      - name: SonarCloud scan and quality gate
-        uses: SonarSource/sonarqube-scan-action@v7.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
-        with:
-          args: >-
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
-            -Dsonar.projectName=${{ env.SERVICE_NAME }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=600
-
-      - name: Setup Snyk
-        if: ${{ env.SNYK_TOKEN != '' }}
-        uses: snyk/actions/setup@master
-
-      - name: Snyk dependency scan
-        if: ${{ env.SNYK_TOKEN != '' }}
-        shell: bash
-        run: snyk test --file=package-lock.json --severity-threshold=high
-
-      - name: Skip Snyk when token is not configured
-        if: ${{ env.SNYK_TOKEN == '' }}
-        run: echo "SNYK_TOKEN is not configured. Skipping Snyk dependency scan."
-
   build_scan_push:
     name: Build, scan, push to ECR, update Helm values
     runs-on: ubuntu-latest
-    needs: quality
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    permissions:
-      contents: read
-      id-token: write
+    outputs:
+      image_uri: ${{ steps.image.outputs.uri }}
+      image_repo: ${{ steps.image.outputs.repo }}
+      image_tag: ${{ steps.image.outputs.tag }}
 
     steps:
       - name: Checkout service
@@ -146,6 +78,24 @@ jobs:
           ignore-unfixed: true
           exit-code: '1'
 
+      - name: Save image details artifact
+        shell: bash
+        run: |
+          mkdir -p pipeline-artifacts
+          {
+            printf 'SERVICE_NAME=%s\n' "$SERVICE_NAME"
+            printf 'IMAGE_REPOSITORY=%s\n' "${{ steps.image.outputs.repo }}"
+            printf 'IMAGE_TAG=%s\n' "${{ steps.image.outputs.tag }}"
+            printf 'IMAGE_URI=%s\n' "${{ steps.image.outputs.uri }}"
+            printf 'GIT_SHA=%s\n' "$GITHUB_SHA"
+          } > pipeline-artifacts/image-details.env
+
+      - name: Upload image details artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-details
+          path: pipeline-artifacts/image-details.env
+
       - name: Push image to ECR
         run: docker push "${{ steps.image.outputs.uri }}"
 
@@ -182,7 +132,7 @@ jobs:
             exit 1
           fi
 
-      - name: Commit terraform-eks image tag update
+      - name: Commit Helm image tag update
         working-directory: infra
         run: |
           git config user.name "medicojobs-ci"
@@ -190,13 +140,12 @@ jobs:
           git add "$HELM_VALUES_FILE"
           git commit -m "deploy($SERVICE_NAME): $GITHUB_SHA"
           git push origin "$INFRA_BRANCH"
+
   notify_failure:
-    name: Email failure notification
+    name: Email build/deploy failure
     runs-on: ubuntu-latest
-    needs:
-      - quality
-      - build_scan_push
-    if: always() && (needs.quality.result == 'failure' || needs.build_scan_push.result == 'failure')
+    needs: build_scan_push
+    if: always() && needs.build_scan_push.result == 'failure'
 
     steps:
       - name: Checkout service
@@ -216,11 +165,7 @@ jobs:
           mail_from: ${{ secrets.MAIL_FROM }}
           mail_to: ${{ secrets.MAIL_TO }}
           workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          report_url: https://sonarcloud.io/dashboard?id=${{ env.SONAR_PROJECT_KEY }}
+          report_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           failure_reason: |
-            CI/CD failed for ${{ env.SERVICE_NAME }}.
+            Docker build, Trivy scan, ECR push, or Helm image update failed for ${{ env.SERVICE_NAME }}.
 
-            Quality job result: ${{ needs.quality.result }}
-            Build, scan, push, deploy-tag job result: ${{ needs.build_scan_push.result }}
-
-            Check the workflow run for the exact failed step. Docker build and ECR push only run after SonarCloud Quality Gate and Snyk pass.
