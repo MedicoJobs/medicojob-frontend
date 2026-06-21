@@ -27,8 +27,12 @@ import CoursePlayer from './pages/CoursePlayer';
 import AdminCourseUpload from './pages/AdminCourseUpload';
 
 import { SOCKET_URL } from './utils/api';
+<<<<<<< HEAD
 const SOCKET_ENABLED = process.env.REACT_APP_ENABLE_SOCKET === 'true';
 export const socket = SOCKET_ENABLED ? io(SOCKET_URL, { autoConnect: false }) : null;
+=======
+export const socket = io(SOCKET_URL, { autoConnect: false });
+>>>>>>> origin/main
 
 function StartupRedirect() {
   const navigate = useNavigate();
@@ -55,10 +59,13 @@ function SocketNotifications({ setNotification }) {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
+<<<<<<< HEAD
     if (!socket) {
       return undefined;
     }
 
+=======
+>>>>>>> origin/main
     if (!user) {
       if (socket.connected) {
         socket.disconnect();
@@ -66,10 +73,13 @@ function SocketNotifications({ setNotification }) {
       return undefined;
     }
 
+<<<<<<< HEAD
     if (!socket.connected) {
       socket.connect();
     }
 
+=======
+>>>>>>> origin/main
     socket.on('newJob', (job) => {
       setNotification({ title: 'New Job Posted!', message: `${job.title} in ${job.location}`, type: 'success' });
     });
