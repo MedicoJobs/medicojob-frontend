@@ -1,10 +1,14 @@
 name: ci.yaml - medicojob-frontend
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature-branch
-
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
 
 permissions:
   contents: read
