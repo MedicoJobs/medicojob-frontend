@@ -1,4 +1,4 @@
-﻿name: ci.yaml - medicojob-frontend
+name: ci.yaml - medicojob-frontend
 
 on:
   push:
@@ -116,8 +116,6 @@ jobs:
             -Dsonar.projectName=${{ env.SERVICE_NAME }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.branch.name=${{ github.ref_name }}
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=600
 
       - name: SonarCloud pull request scan and quality gate
         if: github.event_name == 'pull_request'
@@ -130,8 +128,6 @@ jobs:
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.projectName=${{ env.SERVICE_NAME }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=600
   snyk_scan:
     name: snyk-scan / snyk
     runs-on: ubuntu-latest
