@@ -3,7 +3,7 @@ name: ci.yaml - medicojob-frontend
 on:
   pull_request:
     branches:
-      - main
+      - feature-branch 
     types:
       - opened
       - synchronize
