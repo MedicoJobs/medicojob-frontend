@@ -104,7 +104,23 @@ jobs:
             echo "No Python tests found for $SERVICE_NAME."
           fi
 
-      - name: SonarCloud scan and quality gate
+      - name: SonarCloud branch scan and quality gate
+        if: github.event_name == 'push'
+        uses: SonarSource/sonarqube-scan-action@v7.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >-
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.projectName=${{ env.SERVICE_NAME }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.branch.name=${{ github.ref_name }}
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=600
+
+      - name: SonarCloud pull request scan and quality gate
+        if: github.event_name == 'pull_request'
         uses: SonarSource/sonarqube-scan-action@v7.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -116,7 +132,6 @@ jobs:
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=600
-
   snyk_scan:
     name: snyk-scan / snyk
     runs-on: ubuntu-latest
@@ -228,5 +243,7 @@ jobs:
           failure_reason: |
             ${{ steps.failure.outputs.reason }}
             The pull request must not be merged until validation passes.
+
+
 
 
