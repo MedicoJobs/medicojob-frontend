@@ -178,7 +178,8 @@ jobs:
     if: always()
     steps:
       - name: Print Snyk result
-        run: echo "Snyk result: ${{ needs.snyk_scan.result }}"
+        run: |
+          echo "Snyk result: ${{ needs.snyk_scan.result }}"
 
   notify:
     name: notify
@@ -219,7 +220,7 @@ jobs:
           smtp_username: ${{ secrets.SMTP_USERNAME }}
           smtp_password: ${{ secrets.SMTP_PASSWORD }}
           smtp_server: ${{ secrets.SMTP_SERVER }}
-          smtp_port: ${{ secrets.SMTP_PORT || '587' }}
+          smtp_port: '587'
           mail_from: ${{ secrets.MAIL_FROM }}
           mail_to: ${{ secrets.MAIL_TO }}
           workflow_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -227,4 +228,5 @@ jobs:
           failure_reason: |
             ${{ steps.failure.outputs.reason }}
             The pull request must not be merged until validation passes.
+
 
