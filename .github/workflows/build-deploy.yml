@@ -66,7 +66,7 @@ jobs:
           push: false
           tags: ${{ steps.image.outputs.uri }}
           build-args: |
-            REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || 'https://medicojobs.online' }}
+            REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || 'http://medicojobs.online' }}
 
       - name: Scan built image with Trivy
         uses: aquasecurity/trivy-action@master
