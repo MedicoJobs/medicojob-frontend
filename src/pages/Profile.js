@@ -103,6 +103,10 @@ const Profile = () => {
     formData.append('resume', file);
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        setMessage({ text: 'Please log in again before uploading your resume.', type: 'error' });
+        return;
+      }
       const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/resume`, formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
