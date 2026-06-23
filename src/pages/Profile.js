@@ -83,7 +83,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/image`, formData, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        headers: { Authorization: `Bearer ${token}` }
       });
       login(res.data.user, token);
       setMessage({ text: 'Profile image uploaded successfully!', type: 'success' });
@@ -108,14 +108,14 @@ const Profile = () => {
         return;
       }
       const res = await axios.post(`${API_BASE_URL}/auth/profile/upload/resume`, formData, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        headers: { Authorization: `Bearer ${token}` }
       });
       let nextUser = res.data.user;
       try {
         const analysisForm = new FormData();
         analysisForm.append('file', file);
         const analysisRes = await axios.post(`${API_BASE_URL}/api/resume/upload`, analysisForm, {
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+          headers: { Authorization: `Bearer ${token}` }
         });
         const profileRes = await axios.put(`${API_BASE_URL}/auth/profile`, {
           resumeAnalysis: analysisRes.data,
